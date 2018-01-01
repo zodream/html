@@ -92,6 +92,14 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
 	    return $this->_index * $this->_pageSize >= $this->_total;
     }
 
+    /**
+     * 页码
+     * @return int|mixed
+     */
+    public function getIndex() {
+	    return $this->_index;
+    }
+
 	/**
 	 * 获取分页链接
 	 * @param array $option
