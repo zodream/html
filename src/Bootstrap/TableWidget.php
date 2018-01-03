@@ -28,10 +28,28 @@ class TableWidget extends Widget {
             $this->get('id,class')
         );
     }
+
+    /**
+     * 获取列名
+     * @return array
+     */
+    protected function getColumns() {
+        if ($this->has('columns')) {
+            return $this->get('columns', array());
+        }
+        $data = $this->get('data');
+        if (empty($data)) {
+            return [];
+        }
+        $data = (array)$data;
+        $columns = array_keys(reset($data));
+        $this->set('columns', $columns);
+        return $columns;
+    }
     
     protected function getHead() {
         $content = '';
-        foreach ($this->get('columns', array()) as $key => $value) {
+        foreach ($this->getColumns() as $key => $value) {
             if (is_array($value)) {
                 $content .= Html::tag(
                     'th',
@@ -47,7 +65,7 @@ class TableWidget extends Widget {
     
     protected function getBody() {
         $data = $this->get('data');
-        $columns = $this->get('columns');
+        $columns = $this->getColumns();
         if (empty($data) || empty($columns)) {
             return null;
         }
@@ -62,6 +80,9 @@ class TableWidget extends Widget {
         $content = '';
         foreach ($columns as $key => $value) {
             $k = $key;
+            if (is_integer($key) && !is_array($value)) {
+                $k = $value;
+            }
             // 为避免重复键
             if (is_array($value) && array_key_exists('key', $value)) {
                 $k = $value['key'];
@@ -79,7 +100,7 @@ class TableWidget extends Widget {
         if (!$this->has('foot')) {
             return null;
         }
-        $count = count($this->get('columns'));
+        $count = count($this->getColumns());
         $content = '';
         foreach ((array)$this->get('foot', array()) as $item) {
             $content .= Html::tag('tr', Html::tag('th', $item, array(
