@@ -68,6 +68,14 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
 		return $this;
 	}
 
+    /**
+     * 判断是否为空
+     * @return bool
+     */
+	public function isEmpty() {
+	    return $this->getPageCount() == 0;
+    }
+
 	/**
 	 * 获取一页数据的长度
 	 * @return int
