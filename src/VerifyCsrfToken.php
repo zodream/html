@@ -44,6 +44,6 @@ class VerifyCsrfToken {
 	 * @return string
 	 */
 	public static function get() {
-		return Factory::session()->get('_token');
+		return Factory::session()->token();
 	}
 }
