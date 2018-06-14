@@ -76,7 +76,7 @@ class TableWidget extends Widget {
         return Html::tag('tbody', $content);
     }
     
-    protected function getBodyOne(array $item, array $columns) {
+    protected function getBodyOne($item, array $columns) {
         $content = '';
         foreach ($columns as $key => $value) {
             $k = $key;
@@ -91,7 +91,8 @@ class TableWidget extends Widget {
             if (is_array($value) && array_key_exists('format', $value)) {
                 $format = $value['format'];
             }
-            $content .= Html::tag('td', $this->format((array)Arr::getValues($k, $item), $format));
+            $val = is_array($item) ? Arr::getValues($k, $item) : $item[$k];
+            $content .= Html::tag('td', $this->format((array)$val, $format));
         }
         return Html::tag('tr', $content);
     }
