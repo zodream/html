@@ -142,6 +142,6 @@ class Tree implements JsonAble {
      * @return string
      */
     public function toJson($options = JSON_UNESCAPED_UNICODE) {
-        return JsonExpand::encode($this->makeTree(), $options);
+        return Json::encode($this->makeTree(), $options);
     }
 }
