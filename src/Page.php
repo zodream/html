@@ -25,6 +25,13 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
 		$this->_pageSize = $pageSize;
 	}
 
+    /**
+     * @return int
+     */
+    public function getPageSize() {
+        return $this->_pageSize;
+    }
+
 	/**
 	 * 获取总共的数据
 	 * @return int
