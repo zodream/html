@@ -30,9 +30,9 @@ class VerifyCsrfToken {
 	}
 
     protected static function getTokenFromRequest() {
-        $token = Request::request('_token') ?: Request::header('X-CSRF-TOKEN');
+        $token = app('request')->request('_token') ?: app('request')->header('X-CSRF-TOKEN');
 
-        if (! $token && $header = Request::header('X-XSRF-TOKEN')) {
+        if (! $token && $header = app('request')->header('X-XSRF-TOKEN')) {
             $token = $header;
         }
 

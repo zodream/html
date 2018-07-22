@@ -21,7 +21,7 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
 	public function __construct($total, $pageSize = 20, $key = 'page') {
 		$this->setTotal($total);
 		$this->_key = $key;
-		$this->_index = max(1, Request::get($key, 1));
+		$this->_index = max(1, app('request')->get($key, 1));
 		$this->_pageSize = $pageSize;
 	}
 

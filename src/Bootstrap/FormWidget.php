@@ -8,7 +8,7 @@ namespace Zodream\Html\Bootstrap;
  */
 use Zodream\Html\VerifyCsrfToken;
 use Zodream\Html\Widget;
-use Zodream\Service\Routing\Url;
+use Zodream\Infrastructure\Http\URL;
 
 class FormWidget extends Widget {
     protected $default = array(
