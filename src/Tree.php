@@ -2,7 +2,7 @@
 namespace Zodream\Html;
 
 use Zodream\Infrastructure\Interfaces\JsonAble;
-use Zodream\Helpers\JsonExpand;
+use Zodream\Helpers\Json;
 
 /**
  * 无限树生成
