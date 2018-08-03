@@ -5,7 +5,6 @@ namespace Zodream\Html;
  * 使用方式:
  * $page = new PageLink();
  */
-use Zodream\Infrastructure\Http\URL;
 
 class PageLink extends Widget {
 	
@@ -185,7 +184,7 @@ class PageLink extends Widget {
 	 * @return string
 	 */
 	protected function getGoToPage() {
-	    $uri = Url::to()
+	    $uri = app('request')->uri()
             ->removeData($this->get('key'));
 	    if (!$uri->hasData()) {
 	        $uri .= '?';
@@ -205,7 +204,7 @@ class PageLink extends Widget {
 	
 	protected function replaceLine($page, $text = null) {
 		return $this->replaceTemplate(
-            Url::to(null, array(
+            url(null, array(
                 $this->get('key') => $page
             )),
             $text == null ? $page : $text,

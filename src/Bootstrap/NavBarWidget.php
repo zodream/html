@@ -7,7 +7,7 @@ namespace Zodream\Html\Bootstrap;
  * Time: 10:44
  */
 use Zodream\Html\Widget;
-use Zodream\Infrastructure\Http\URL;
+
 
 class NavBarWidget extends Widget {
 
@@ -125,7 +125,7 @@ HTML;
     }
 
     public function search($url, $tag = 'search') {
-        $url = Url::to($url);
+        $url = url()->to($url);
         return <<<HTML
 <form class="navbar-form navbar-left" action="{$url}" method="get" role="search">
     <div class="form-group">

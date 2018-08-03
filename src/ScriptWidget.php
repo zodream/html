@@ -6,7 +6,7 @@ namespace Zodream\Html;
  * Date: 2016/4/29
  * Time: 16:24
  */
-use Zodream\Infrastructure\Http\URL;
+
 use Zodream\Infrastructure\Support\Html;
 
 class ScriptWidget extends Widget {
@@ -21,7 +21,7 @@ class ScriptWidget extends Widget {
         if ($this->has('file')) {
             return Html::tag('script' , '', array(
                 'type' => 'text/javascript',
-                'src' => Url::to($this->get('file'))
+                'src' => url()->asset($this->get('file'))
             ));
         }
         return Html::tag('script', $this->get('source'));
@@ -30,7 +30,7 @@ class ScriptWidget extends Widget {
     protected function css() {
         if ($this->has('file')) {
             return Html::tag('link', '', array(
-                'href' => Url::to($this->get('file')),
+                'href' => url()->asset($this->get('file')),
                 'rel' => 'stylesheet'
             ));
         }

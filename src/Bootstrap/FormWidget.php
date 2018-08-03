@@ -8,7 +8,7 @@ namespace Zodream\Html\Bootstrap;
  */
 use Zodream\Html\VerifyCsrfToken;
 use Zodream\Html\Widget;
-use Zodream\Infrastructure\Http\URL;
+
 
 class FormWidget extends Widget {
     protected $default = array(
@@ -18,7 +18,7 @@ class FormWidget extends Widget {
     );
     
     protected function run() {
-        $this->set('action', Url::to($this->get('action')));
+        $this->set('action', url()->to($this->get('action')));
         $content = '';
         $data = (array)$this->get('data');
         foreach ($this->get('fields', array()) as $key => $value) {
