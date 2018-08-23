@@ -41,9 +41,21 @@ class FormWidget extends Widget {
             }
             $content .= FieldWidget::show($value);
         }
+        $options = $this->get('id,class form-horizontal,role form,action,method POST');
+        $options['method'] = strtoupper($options['method']);
+        if (!in_array($options['method'], ['GET', 'POST'])) {
+            $content .= Html::input('hidden', [
+                'name' => '_method',
+                'value' => $options['method']
+            ]);
+            $options['method'] = 'POST';
+        }
+        if ($options['method'] != 'GET') {
+            $content .= $this->csrf();;
+        }
         return Html::tag('form', 
-            $content, 
-            $this->get('id,class form-horizontal,role form,action,method POST')
+            $content,
+            $options
         );
     }
 
@@ -51,7 +63,6 @@ class FormWidget extends Widget {
         $instance = new static;
         $option['data'] = $data;
         $instance->set($option);
-        $instance->csrf();
         return $instance;
     }
     
@@ -71,7 +82,7 @@ class FormWidget extends Widget {
             $this->_data['fields'][] = $content;
             return $this;
         }
-        $this->_data['fields'][$content] = func_get_arg(1);
+        $this->__attributes['fields'][$content] = func_get_arg(1);
         return $this;
     }
     
@@ -85,25 +96,25 @@ class FormWidget extends Widget {
 
     public function input($name, $type = 'text', $option = array()) {
         if (!in_array($type, array('radio', 'checkbox'))) {
-            $this->_data['fields'][$name] = array(
+            $this->__attributes['fields'][$name] = array(
                 'type' => $type,
                 'option' => $option
             );
             return $this;
         }
         if (!isset($this->_data['fields'][$name])) {
-            $this->_data['fields'][$name] = array(
+            $this->__attributes['fields'][$name] = array(
                 'type' => $type,
                 'label' => isset($option['label']) ? $option['label'] : null,
                 'groups' => array()
             );
         }
-        $this->_data['fields'][$name]['groups'][] = $option;
+        $this->__attributes['fields'][$name]['groups'][] = $option;
         return $this;
     }
 
     public function textArea($name, $option = array()) {
-        $this->_data['fields'][$name] = array(
+        $this->__attributes['fields'][$name] = array(
             'type' => 'textarea',
             'option' => $option
         );
@@ -144,7 +155,7 @@ class FormWidget extends Widget {
     }
 
     public function select($name, array $items, $option = array()) {
-        $this->_data['fields'][$name] = array(
+        $this->__attributes['fields'][$name] = array(
             'type' => 'select',
             'items' => $items,
             'option' => $option
@@ -171,7 +182,7 @@ class FormWidget extends Widget {
     public function button($value = '提交', $type = 'submit', $option = array()) {
         $option['type'] = $type;
         $option['value'] = $value;
-        $this->_data['fields'][] = array(
+        $this->__attributes['fields'][] = array(
             'type' => 'button',
             'option' => $option,
         );

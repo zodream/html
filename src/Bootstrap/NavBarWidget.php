@@ -84,7 +84,7 @@ HTML;
     }
 
     public function menuItem($args) {
-        if (!is_array()) {
+        if (!is_array($args)) {
             $args = ['label' => $args];
         }
         if (array_key_exists('option', $args)) {

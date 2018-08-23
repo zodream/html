@@ -28,7 +28,7 @@ class AccordionWidget extends Widget {
             if ($tags instanceof \Closure) {
                 list($title, $body) = $tags($item, $key);
             } elseif (!is_array($tags) || count($tags) != 2) {
-                Error::out('参数不正确！', __FILE__, __LINE__);
+                throw new \Exception(__('error args'));
             } elseif (array_key_exists('title', $tags)) {
                 $title = $item[$tags['title']];
                 $body = $item[$tags['body']];

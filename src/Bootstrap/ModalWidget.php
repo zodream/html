@@ -34,7 +34,7 @@ class ModalWidget extends Widget {
   </div>
 </div>
 HTML;
-
+        return $html;
     }
 
     protected function getFoot() {
