@@ -7,7 +7,7 @@ use Zodream\Infrastructure\Support\Html;
 
 class Form {
 
-    public static function open($action = null, $method = 'POST', $options) {
+    public static function open($action = null, $method = 'POST', $options = []) {
         $method = strtoupper($method);
         $spoofedMethods = ['DELETE', 'PATCH', 'PUT'];
         if (isset($options['files']) && $options['files']) {
@@ -41,10 +41,10 @@ class Form {
 
 
     public static function input($type, $name, $value = null, $options = []) {
-        if (empty($name)) {
+        if (!empty($name)) {
             $options['name'] = $name;
         }
-        if (empty($value)) {
+        if (!empty($value)) {
             $options['value'] = $value;
         }
         return Html::input($type, $options);

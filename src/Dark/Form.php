@@ -11,7 +11,10 @@ class Form {
      */
     protected static $model;
 
-    public static function open(Model $model, $uri, $option = []) {
+    public static function open($model, $uri = null, $option = []) {
+        if (!$model instanceof Model && is_string($model)) {
+            list($uri, $model) = [$model, null];
+        }
         static::$model = $model;
         return BaseForm::open($uri, 'POST', array_merge([
             'data-type' => 'ajax',
@@ -20,17 +23,17 @@ class Form {
         ], $option));
     }
 
-    public static function text($name) {
-        return Theme::text($name, static::$model->get($name), static::$model->getLabel($name));
+    public static function text($name, $required = false, $placeholder = null) {
+        return Theme::text($name, static::$model->get($name), static::$model->getLabel($name), $placeholder, $required);
     }
 
-    public static function password($name) {
-        return Theme::password($name, '', static::$model->getLabel($name));
+    public static function password($name, $required = false, $placeholder = null) {
+        return Theme::password($name, '', static::$model->getLabel($name), $placeholder, $required);
     }
 
 
-    public static function email($name) {
-        return Theme::email($name, static::$model->get($name), static::$model->getLabel($name));
+    public static function email($name, $required = false, $placeholder = null) {
+        return Theme::email($name, static::$model->get($name), static::$model->getLabel($name), $placeholder, $required);
     }
 
     public static function radio($name, array $data) {
@@ -41,25 +44,29 @@ class Form {
         return Theme::checkbox($name, $data, static::$model->get($name), static::$model->getLabel($name));
     }
 
-    public static function select($name, array $data) {
-        return Theme::select($name, $data, static::$model->get($name), static::$model->getLabel($name));
+    public static function select($name, array $data, $required = false) {
+        return Theme::select($name, $data, static::$model->get($name), static::$model->getLabel($name), $required);
     }
 
-    public static function file($name) {
-        return Theme::file($name, static::$model->get($name), static::$model->getLabel($name));
+    public static function file($name, $required = false, $placeholder = null) {
+        return Theme::file($name, static::$model->get($name), static::$model->getLabel($name), $placeholder, $required);
     }
 
-    public static function textarea($name) {
-        return Theme::textarea($name, static::$model->get($name), static::$model->getLabel($name));
+    public static function textarea($name, $required = false, $placeholder = null) {
+        return Theme::textarea($name, static::$model->get($name), static::$model->getLabel($name), $placeholder, $required);
     }
 
 
     /**
+     * @param bool $pk 是否隐藏输出主键
      * @return string|static
-     * @throws \Exception
      */
-    public static function close() {
+    public static function close($pk = false) {
+        $html = '';
+        if (!empty($pk) && !empty(static::$model)) {
+            $html = BaseForm::hidden($pk, static::$model->get($pk));
+        }
         static::$model = null;
-        return BaseForm::close();
+        return $html.BaseForm::close();
     }
 }

@@ -72,9 +72,10 @@ class Theme {
         if (empty($label)) {
             $label = Str::studly($name);
         }
+
         $html =  '';
         foreach ($data as $key => $item) {
-            $checked = $selected == $key ? 'checked' : null;
+            $checked = $key == $selected ? 'checked' : null;
             $html .= <<<HTML
 <label>
     <input value="{$key}" name="{$name}" type="radio" {$checked}> {$item}
