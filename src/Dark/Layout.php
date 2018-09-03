@@ -42,7 +42,7 @@ class Layout {
             {$menu}
         </div>
         <div id="page-content" class="right-content">
-            <?=$content?>
+            {$content}
         </div>
     </div>
    {$footer}
