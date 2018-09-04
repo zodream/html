@@ -107,6 +107,9 @@ HTML;
             $label = Str::studly($name);
         }
         $html =  '';
+        if (isset($data[0]) && !is_numeric($data[0]) && is_string($data[0])) {
+            $data = self::getColumnsSource(...$data);
+        }
         foreach ($data as $key => $item) {
             $html .= Html::tag('option', $item, array(
                 'value' => $key,
@@ -119,6 +122,17 @@ HTML;
                 'id' => $name,
                 'required' => $required
         ]), $name);
+    }
+
+    protected static function getColumnsSource($data, $value = 'name', $key = 'id') {
+        if (empty($data)) {
+            return [];
+        }
+        $args = [];
+        foreach ($data as $item) {
+            $args[$item[$key]] = $item[$value];
+        }
+        return $args;
     }
 
     public static function file($name, $value = '', $label = null,
