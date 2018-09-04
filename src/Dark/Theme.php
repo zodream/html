@@ -107,7 +107,7 @@ HTML;
             $label = Str::studly($name);
         }
         $html =  '';
-        if (isset($data[0]) && !is_numeric($data[0]) && is_string($data[0])) {
+        if (isset($data[0]) && !is_numeric($data[0]) && !is_string($data[0])) {
             $data = self::getColumnsSource(...$data);
         }
         foreach ($data as $key => $item) {

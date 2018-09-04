@@ -53,7 +53,9 @@ HTML;
 
     public static function mainIfPjax(View $view, array $menus = [], $name = 'ZoDream Admin') {
         if (app('request')->isPjax()) {
-            return sprintf('<title>%s</title>%s', $view->get('title'), $view->get('content'));
+            return sprintf('<title>%s</title>%s%s%s',
+                $view->get('title'), $view->renderHeader(),
+                $view->get('content'), $view->renderFooter());
 
         }
         return static::main($view, $menus, $name);
