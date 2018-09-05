@@ -124,15 +124,20 @@ HTML;
         ]), $name);
     }
 
-    protected static function getColumnsSource($data, $value = 'name', $key = 'id') {
+    protected static function getColumnsSource($data, $value = 'name', $key = 'id', array $prepend = []) {
+        if (is_array($value)) {
+            list($prepend, $value, $key) = [$value, 'name', 'id'];
+        } elseif (is_array($key)) {
+            list($prepend, $key) = [$key, 'id'];
+        }
         if (empty($data)) {
-            return [];
+            return $prepend;
         }
-        $args = [];
+        $prepend = [];
         foreach ($data as $item) {
-            $args[$item[$key]] = $item[$value];
+            $prepend[$item[$key]] = $item[$value];
         }
-        return $args;
+        return $prepend;
     }
 
     public static function file($name, $value = '', $label = null,
@@ -190,6 +195,10 @@ HTML;
         }
         $class = 'form-control';
         $id = $name;
+        if (!is_bool($required)) {
+            $value = empty($value) ? $required : $value;
+            $required = true;
+        }
         $input = $type == 'textarea' ? Html::tag($type, $value, compact('nam', 'placeholder', 'id', 'required', 'class'))
             : Form::input($type, $name, $value, compact('placeholder', 'id', 'required', 'class'));
         return array($label, $id, $input);
