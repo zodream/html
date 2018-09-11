@@ -19,7 +19,7 @@ class Theme {
     public static function menuItem($label, $url = 'javascript:;', $icon = '',
                                     $children = [], $expand = false, $active = false) {
         $text = empty($icon) ? '' : sprintf('<i class="%s"></i>', $icon);
-        $text = Html::a(sprintf('%s<span>%s</span>', $text, $label), $url);
+        $text = Html::a(sprintf('%s<span>%s</span>', $text, $label), $url === false ? 'javascript:;' : $url);
         $class = $active ? 'active' : null;
         if (!empty($children)) {
             $text .= static::menu($children);
