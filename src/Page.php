@@ -1,9 +1,8 @@
 <?php
 namespace Zodream\Html;
 
+use Zodream\Database\Query\Builder;
 use Zodream\Infrastructure\Base\MagicObject;
-use Zodream\Database\Query\Query;
-use Zodream\Infrastructure\Http\Request;
 use Zodream\Infrastructure\Interfaces\ArrayAble;
 use Zodream\Infrastructure\Interfaces\JsonAble;
 use JsonSerializable;
@@ -40,13 +39,14 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
 		return $this->_total;
 	}
 
-	/**
-	 * 设置总共的数据
-	 * @param $total
-	 * @return $this
-	 */
+    /**
+     * 设置总共的数据
+     * @param $total
+     * @return $this
+     * @throws \Exception
+     */
 	public function setTotal($total) {
-		if ($total instanceof Query) {
+		if ($total instanceof Builder) {
 			$this->_total = intval($total->count());
 			return $this;
 		}
@@ -62,13 +62,14 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
 		return $this->getAttribute();
 	}
 
-	/**
-	 * 设置一页的数据
-	 * @param array|Query $data
-	 * @return $this
-	 */
+    /**
+     * 设置一页的数据
+     * @param array|Builder $data
+     * @return $this
+     * @throws \Exception
+     */
 	public function setPage($data) {
-		if ($data instanceof Query) {
+		if ($data instanceof Builder) {
 			$data = $data->limit($this->getLimit())->all();
 		}
 		$this->setAttribute($data);
