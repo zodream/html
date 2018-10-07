@@ -199,7 +199,7 @@ HTML;
             $value = empty($value) ? $required : $value;
             $required = true;
         }
-        $input = $type == 'textarea' ? Html::tag($type, $value, compact('nam', 'placeholder', 'id', 'required', 'class'))
+        $input = $type == 'textarea' ? Html::tag($type, $value, compact('nam', 'placeholder', 'id', 'required', 'class', 'name'))
             : Form::input($type, $name, $value, compact('placeholder', 'id', 'required', 'class'));
         return array($label, $id, $input);
     }
