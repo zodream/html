@@ -193,14 +193,29 @@ HTML;
         if (empty($placeholder)) {
             $placeholder = sprintf('%s %s', __('Please input'), $label);
         }
-        $class = 'form-control';
         $id = $name;
-        if (!is_bool($required)) {
+        if (!is_array($required) && !is_bool($required)) {
             $value = empty($value) ? $required : $value;
             $required = true;
         }
-        $input = $type == 'textarea' ? Html::tag($type, $value, compact('nam', 'placeholder', 'id', 'required', 'class', 'name'))
-            : Form::input($type, $name, $value, compact('placeholder', 'id', 'required', 'class'));
+        $options = [];
+        if (is_array($required)) {
+            $options = $required;
+            $required = isset($options['required']) ? $options['required'] : false;
+        }
+        if (!isset($options['name'])) {
+            $options['name'] = $name;
+        }
+        if (!isset($options['placeholder']) && !empty($placeholder)) {
+            $options['placeholder'] = $placeholder;
+        }
+        if (!isset($options['id'])) {
+            $options['id'] = $id;
+        }
+        $options['required'] = $required;
+        $options['class'] = sprintf('form-control %s', isset($options['class']) ? $options['class'] : '');
+        $input = $type == 'textarea' ? Html::tag($type, $value, $options)
+            : Form::input($type, $name, $value, $options);
         return array($label, $id, $input);
     }
 
