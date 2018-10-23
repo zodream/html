@@ -27,8 +27,19 @@ class Form {
         return Theme::text($name, static::$model->get($name), static::$model->getLabel($name), $placeholder, $required);
     }
 
-    public static function password($name, $required = false, $placeholder = null) {
-        return Theme::password($name, '', static::$model->getLabel($name), $placeholder, $required);
+    /**
+     * @param $name
+     * @param bool $required
+     * @param null $placeholder
+     * @param null $label
+     * @param bool $toggle 是否显示
+     * @return null|string
+     */
+    public static function password($name, $required = false, $placeholder = null, $label = null, $toggle = true) {
+        if (!$toggle) {
+            return null;
+        }
+        return Theme::password($name, '', $label ?: static::$model->getLabel($name), $placeholder, $required);
     }
 
 
