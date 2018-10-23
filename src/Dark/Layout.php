@@ -5,7 +5,7 @@ use Zodream\Template\View;
 
 class Layout {
 
-    public static function main(View $view, array $menus = [], $name = 'ZoDream Admin', $hasPajax = true) {
+    public static function main(View $view, array $menus = [], $name = 'ZoDream Admin', $hasPajax = false) {
         if ($hasPajax) {
             $view->registerJs('$(document).pjax(\'a\', \'#page-content\');', View::JQUERY_READY);
         }
@@ -36,12 +36,12 @@ class Layout {
             {$name}
         </div>
     </header>
-    <div class="container page-box">
-        <div class="left-catelog navbar">
-            <span class="left-catelog-toggle"></span>
+    <div class="app-wrapper container">
+        <div class="sidebar-container navbar">
+            <span class="sidebar-container-toggle"></span>
             {$menu}
         </div>
-        <div id="page-content" class="right-content">
+        <div id="page-content" class="main-container">
             {$content}
         </div>
     </div>
@@ -58,7 +58,7 @@ HTML;
                 $view->get('content'), $view->renderFooter());
 
         }
-        return static::main($view, $menus, $name);
+        return static::main($view, $menus, $name, true);
     }
 
 }
