@@ -124,6 +124,14 @@ HTML;
         ]), $name);
     }
 
+    /**
+     * 转化为键值对数组
+     * @param array $data
+     * @param string $value
+     * @param string $key
+     * @param array $prepend
+     * @return array|mixed
+     */
     protected static function getColumnsSource($data, $value = 'name', $key = 'id', array $prepend = []) {
         if (is_array($value)) {
             list($prepend, $value, $key) = [$value, 'name', 'id'];
@@ -135,6 +143,11 @@ HTML;
         }
         $prepend = [];
         foreach ($data as $item) {
+            // 支持值作为键值
+            if (is_numeric($item) || is_string($item)) {
+                $prepend[$item] = $item;
+                continue;
+            }
             $prepend[$item[$key]] = $item[$value];
         }
         return $prepend;
