@@ -204,9 +204,9 @@ class PageLink extends Widget {
 	
 	protected function replaceLine($page, $text = null) {
 		return $this->replaceTemplate(
-            url(array(
+            url([
                 $this->get('key') => $page
-            )),
+            ]),
             $text == null ? $page : $text,
             $page == $this->get('page')
 		);
