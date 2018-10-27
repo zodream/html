@@ -141,7 +141,6 @@ HTML;
         if (empty($data)) {
             return $prepend;
         }
-        $prepend = [];
         foreach ($data as $item) {
             // 支持值作为键值
             if (is_numeric($item) || is_string($item)) {
