@@ -158,12 +158,19 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
      * @return array
      */
     public function toArray() {
+        $data = array_map(function ($value) {
+            if ($value instanceof ArrayAble) {
+                return $value->toArray();
+            }
+            return $value;
+        }, $this->getPage());
         return [
-            'total' => $this->getTotal(),
-            'page' => $this->_index,
-            'pageSize' => $this->_pageSize,
-            'key' => $this->_key,
-            'pagelist' => $this->getAttribute()
+            'paging' => [
+                'limit' => $this->getPageSize(),
+                'offset' => $this->getIndex(),
+                'total' => $this->getTotal(),
+            ],
+            'data' => $data
         ];
     }
 }
