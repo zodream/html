@@ -39,7 +39,7 @@ class Form {
         if (!$toggle) {
             return null;
         }
-        return Theme::password($name, '', $label ?: static::$model->getLabel($name), $placeholder, $required);
+        return Theme::password($name, $label ?: static::$model->getLabel($name), $placeholder, $required);
     }
 
 
@@ -47,11 +47,11 @@ class Form {
         return Theme::email($name, static::$model->get($name), static::$model->getLabel($name), $placeholder, $required);
     }
 
-    public static function radio($name, array $data) {
+    public static function radio($name, $data) {
         return Theme::radio($name, $data, static::$model->get($name), static::$model->getLabel($name));
     }
 
-    public static function checkbox($name, array $data) {
+    public static function checkbox($name, $data = null) {
         return Theme::checkbox($name, $data, static::$model->get($name), static::$model->getLabel($name));
     }
 

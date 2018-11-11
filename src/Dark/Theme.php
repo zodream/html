@@ -55,181 +55,41 @@ class Theme {
 
     public static function text($name, $value = '', $label = null,
                                 $placeholder = null, $required = false) {
-        return self::inputType(__FUNCTION__, $name, $value, $label, $placeholder, $required);
+        return Input::text($name, $value)->label($label)->placeholder($placeholder)->required($required);
     }
 
     public static function email($name, $value = '', $label = null,
                                 $placeholder = null, $required = false) {
-        return self::inputType(__FUNCTION__, $name, $value, $label, $placeholder, $required);
+        return Input::email($name, $value)->label($label)->placeholder($placeholder)->required($required);
     }
 
-    public static function password($name, $value = '', $label = null,
+    public static function password($name, $label = null,
                                  $placeholder = null, $required = false) {
-        return self::inputType(__FUNCTION__, $name, $value, $label, $placeholder, $required);
+        return Input::password($name)->label($label)->placeholder($placeholder)->required($required);
     }
 
-    public static function radio($name, array $data, $selected = null, $label = null) {
-        if (empty($label)) {
-            $label = Str::studly($name);
-        }
-
-        $html =  '';
-        foreach ($data as $key => $item) {
-            $checked = $key == $selected ? 'checked' : null;
-            $html .= <<<HTML
-<label>
-    <input value="{$key}" name="{$name}" type="radio" {$checked}> {$item}
-</label>
-HTML;
-        }
-        return self::input($label, $html, null);
+    public static function radio($name, $data, $selected = null, $label = null) {
+        return Input::radio($name, $selected)->label($label)->items($data);
     }
 
-    public static function checkbox($name, array $data, $selected = null, $label = null) {
-        if (empty($label)) {
-            $label = Str::studly($name);
-        }
-        $html =  '';
-        foreach ($data as $key => $item) {
-            $checked = (!is_array($selected) && $selected == $key)
-            || (is_array($selected) && in_array($key, $selected)) ? 'checked' : null;
-            $html .= <<<HTML
-<label>
-    <input value="{$key}" name="{$name}" type="checkbox" {$checked}> {$item}
-</label>
-HTML;
-        }
-        return self::input($label, $html, null);
+    public static function checkbox($name, $data, $selected = null, $label = null) {
+        return Input::checkbox($name, $selected)->label($label)->items($data);
     }
 
     public static function select($name, array $data, $selected = null, $label = null, $required = false) {
-        if (empty($label)) {
-            $label = Str::studly($name);
-        }
-        $html =  '';
-        if (isset($data[0]) && !is_numeric($data[0]) && !is_string($data[0])) {
-            $data = self::getColumnsSource(...$data);
-        }
-        foreach ($data as $key => $item) {
-            $html .= Html::tag('option', $item, array(
-                'value' => $key,
-                'selected' => $selected == $key
-            ));
-        }
-        return self::input($label, Html::tag(
-            'select', $html, [
-                'name' => $name,
-                'id' => $name,
-                'required' => $required
-        ]), $name);
+        return Input::select($name, $selected)->label($label)->items($data)->required($required);
     }
 
-    /**
-     * 转化为键值对数组
-     * @param array $data
-     * @param string $value
-     * @param string $key
-     * @param array $prepend
-     * @return array|mixed
-     */
-    protected static function getColumnsSource($data, $value = 'name', $key = 'id', array $prepend = []) {
-        if (is_array($value)) {
-            list($prepend, $value, $key) = [$value, 'name', 'id'];
-        } elseif (is_array($key)) {
-            list($prepend, $key) = [$key, 'id'];
-        }
-        if (empty($data)) {
-            return $prepend;
-        }
-        foreach ($data as $item) {
-            // 支持值作为键值
-            if (is_numeric($item) || is_string($item)) {
-                $prepend[$item] = $item;
-                continue;
-            }
-            $prepend[$item[$key]] = $item[$value];
-        }
-        return $prepend;
-    }
+
 
     public static function file($name, $value = '', $label = null,
                                  $placeholder = null, $required = false) {
-        list($label, $id, $input) = self::renderInput('text', $name, $value, $label, $placeholder, $required);
-        $upload = __('Upload');
-        $preview =  __('Preview');
-        $input .= <<<HTML
-<button type="button" data-type="upload">{$upload}</button>
-<button type="button" data-type="preview">{$preview}</button>
-HTML;
-        return self::input($label, $input, $id, 'file-input');
+        return Input::file($name, $value)->label($label)->placeholder($placeholder)->required($required);
     }
 
     public static function textarea($name, $value = '', $label = null,
                                     $placeholder = null, $required = false) {
-        return self::inputType(__FUNCTION__, $name, $value, $label, $placeholder, $required);
+        return Input::textarea($name, $value)->label($label)->placeholder($placeholder)->required($required);
     }
-
-    public static function inputType($type, $name, $value = '', $label = null,
-                                $placeholder = null, $required = false) {
-        list($label, $id, $input) = self::renderInput($type, $name, $value, $label, $placeholder, $required);
-        return self::input($label, $input, $id);
-    }
-
-
-
-    public static function input($label, $input, $id, $boxClass = null) {
-        return <<<HTML
-<div class="input-group">
-    <label for="{$id}">{$label}</label>
-    <div class="{$boxClass}">
-        {$input}
-    </div>
-</div>
-HTML;
-    }
-
-    /**
-     * @param $type
-     * @param $name
-     * @param $value
-     * @param $label
-     * @param $placeholder
-     * @param $required
-     * @return array
-     * @throws \Exception
-     */
-    public static function renderInput($type, $name, $value, $label, $placeholder, $required): array {
-        if (empty($label)) {
-            $label = Str::studly($name);
-        }
-        if (empty($placeholder)) {
-            $placeholder = sprintf('%s %s', __('Please input'), $label);
-        }
-        $id = $name;
-        if (!is_array($required) && !is_bool($required)) {
-            $value = empty($value) ? $required : $value;
-            $required = true;
-        }
-        $options = [];
-        if (is_array($required)) {
-            $options = $required;
-            $required = isset($options['required']) ? $options['required'] : false;
-        }
-        if (!isset($options['name'])) {
-            $options['name'] = $name;
-        }
-        if (!isset($options['placeholder']) && !empty($placeholder)) {
-            $options['placeholder'] = $placeholder;
-        }
-        if (!isset($options['id'])) {
-            $options['id'] = $id;
-        }
-        $options['required'] = $required;
-        $options['class'] = sprintf('form-control %s', isset($options['class']) ? $options['class'] : '');
-        $input = $type == 'textarea' ? Html::tag($type, $value, $options)
-            : Form::input($type, $name, $value, $options);
-        return array($label, $id, $input);
-    }
-
 
 }
