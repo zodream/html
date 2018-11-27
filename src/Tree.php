@@ -1,6 +1,7 @@
 <?php 
 namespace Zodream\Html;
 
+use Zodream\Helpers\Arr;
 use Zodream\Infrastructure\Interfaces\JsonAble;
 use Zodream\Helpers\Json;
 
@@ -38,13 +39,13 @@ class Tree implements JsonAble {
 
     protected $data = [];
 
-    public function __construct(array $data, array $option = []) {
+    public function __construct($data, array $option = []) {
         $this->config = array_merge($this->config, $option);
         $this->set($data);
     }
 
-    public function set(array $data) {
-        $this->data = $this->_format($data);
+    public function set($data) {
+        $this->data = $this->_format(Arr::toArray($data));
         return $this;
     }
 
