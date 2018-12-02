@@ -105,7 +105,7 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
      * @return bool
      */
 	public function hasMore() {
-	    return $this->_index * $this->_pageSize >= $this->_total;
+	    return $this->_index * $this->_pageSize < $this->_total;
     }
 
     /**
