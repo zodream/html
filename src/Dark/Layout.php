@@ -7,7 +7,8 @@ class Layout {
 
     public static function main(View $view, array $menus = [], $name = 'ZoDream Admin', $hasPajax = false) {
         if ($hasPajax) {
-            $view->registerJs('$(document).pjax(\'a\', \'#page-content\');', View::JQUERY_READY);
+            $view->registerJs('function parseAjaxUri(uri) { $.pjax({url: uri, container: \'#page-content\'});}')
+                ->registerJs('$(document).pjax(\'a\', \'#page-content\');', View::JQUERY_READY);
         }
         $lang = $view->get('language', 'zh-CN');
         $description = $view->get('description');
