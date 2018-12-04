@@ -169,6 +169,7 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
                 'limit' => $this->getPageSize(),
                 'offset' => $this->getIndex(),
                 'total' => $this->getTotal(),
+                'more' => $this->hasMore()
             ],
             'data' => $data
         ];
