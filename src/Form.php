@@ -15,7 +15,7 @@ class Form {
         }
         $reserved = ['method', 'url', 'route', 'action', 'files'];
         $attributes['method'] = $method != 'GET' ? 'POST' : $method;
-        $attributes['action'] = url()->to($action);
+        $attributes['action'] = (string)url()->toRealUri($action);
         $attributes['accept-charset'] = 'UTF-8';
         $attributes = array_merge(
             $attributes, Arr::except($options, $reserved)

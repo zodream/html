@@ -206,7 +206,7 @@ class PageLink extends Widget {
 		return $this->replaceTemplate(
             url([
                 $this->get('key') => $page
-            ]),
+            ], null, true, false),
             $text == null ? $page : $text,
             $page == $this->get('page')
 		);
