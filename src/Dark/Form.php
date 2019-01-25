@@ -3,6 +3,7 @@ namespace Zodream\Html\Dark;
 
 
 use Zodream\Database\Model\Model;
+use Zodream\Helpers\Str;
 use Zodream\Html\Form as BaseForm;
 
 class Form {
@@ -10,6 +11,16 @@ class Form {
      * @var Model
      */
     protected static $model;
+
+    public static function getModelValue($name) {
+        return static::$model instanceof Model ?
+            static::$model->getAttributeValue($name) : null;
+    }
+
+    public static function getModelLabel($name) {
+        return static::$model instanceof Model ?
+            static::$model->getLabel($name) : Str::studly($name);
+    }
 
     public static function open($model, $uri = null, $option = []) {
         if (!$model instanceof Model && is_string($model)) {
@@ -24,7 +35,7 @@ class Form {
     }
 
     public static function text($name, $required = false, $placeholder = null) {
-        return Theme::text($name, static::$model->get($name), static::$model->getLabel($name), $placeholder, $required);
+        return Theme::text($name, static::getModelValue($name), static::getModelLabel($name), $placeholder, $required);
     }
 
     /**
@@ -39,32 +50,32 @@ class Form {
         if (!$toggle) {
             return null;
         }
-        return Theme::password($name, $label ?: static::$model->getLabel($name), $placeholder, $required);
+        return Theme::password($name, $label ?: static::getModelLabel($name), $placeholder, $required);
     }
 
 
     public static function email($name, $required = false, $placeholder = null) {
-        return Theme::email($name, static::$model->get($name), static::$model->getLabel($name), $placeholder, $required);
+        return Theme::email($name, static::getModelValue($name), static::getModelLabel($name), $placeholder, $required);
     }
 
     public static function radio($name, $data) {
-        return Theme::radio($name, $data, static::$model->get($name), static::$model->getLabel($name));
+        return Theme::radio($name, $data, static::getModelValue($name), static::getModelLabel($name));
     }
 
     public static function checkbox($name, $data = null) {
-        return Theme::checkbox($name, $data, static::$model->get($name), static::$model->getLabel($name));
+        return Theme::checkbox($name, $data, static::getModelValue($name), static::getModelLabel($name));
     }
 
     public static function select($name, array $data, $required = false) {
-        return Theme::select($name, $data, static::$model->get($name), static::$model->getLabel($name), $required);
+        return Theme::select($name, $data, static::getModelValue($name), static::getModelLabel($name), $required);
     }
 
     public static function file($name, $required = false, $placeholder = null) {
-        return Theme::file($name, static::$model->get($name), static::$model->getLabel($name), $placeholder, $required);
+        return Theme::file($name, static::getModelValue($name), static::getModelLabel($name), $placeholder, $required);
     }
 
     public static function textarea($name, $required = false, $placeholder = null) {
-        return Theme::textarea($name, static::$model->get($name), static::$model->getLabel($name), $placeholder, $required);
+        return Theme::textarea($name, static::getModelValue($name), static::getModelLabel($name), $placeholder, $required);
     }
 
 
@@ -75,7 +86,7 @@ class Form {
     public static function close($pk = false) {
         $html = '';
         if (!empty($pk) && !empty(static::$model)) {
-            $html = BaseForm::hidden($pk, static::$model->get($pk));
+            $html = BaseForm::hidden($pk, static::getModelValue($pk));
         }
         static::$model = null;
         return $html.BaseForm::close();
