@@ -44,7 +44,7 @@ class Form {
         if (!empty($name)) {
             $options['name'] = $name;
         }
-        if (!empty($value)) {
+        if (!is_null($value)) {
             $options['value'] = $value;
         }
         return Html::input($type, $options);

@@ -112,7 +112,7 @@ class Input {
         if (!empty($name)) {
             $this->setName($name);
         }
-        if (!empty($value)) {
+        if (!is_null($value)) {
             $this->value = $value;
         }
         return $this;
