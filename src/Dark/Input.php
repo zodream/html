@@ -47,9 +47,7 @@ class Input {
         if (!empty($name)) {
             $this->setName($name);
         }
-        if (!empty($value)) {
-            $this->value = $value;
-        }
+        $this->value = $value;
     }
 
     public function setName($name) {
