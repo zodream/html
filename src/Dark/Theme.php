@@ -11,13 +11,19 @@ class Theme {
     public static function menu(array $data) {
         $html = '';
         foreach ($data as $item) {
+            if (empty($item)) {
+                continue;
+            }
             $html .= static::menuItem(...self::getMenuItem($item));
         }
         return Html::ul($html);
     }
 
     public static function menuItem($label, $url = 'javascript:;', $icon = '',
-                                    $children = [], $expand = false, $active = false) {
+                                    $children = [], $expand = false, $active = false, $toggle = true) {
+        if ($toggle === false) {
+            return '';
+        }
         $text = empty($icon) ? '' : sprintf('<i class="%s"></i>', $icon);
         $text = Html::a(sprintf('%s<span>%s</span>', $text, $label), $url === false ? 'javascript:;' : $url);
         $class = $active ? 'active' : null;
@@ -30,7 +36,7 @@ class Theme {
 
     protected static function getMenuItem($data) {
         if (!is_array($data)) {
-            return [$data, 'javascript:;', '', [], false, false];
+            return [$data, 'javascript:;', '', [], false, false, true];
         }
         if (!Arr::isAssoc($data)) {
             return array_replace([
@@ -39,7 +45,8 @@ class Theme {
                 '',
                 [],
                 false,
-                false
+                false,
+                true
             ], $data);
         }
         return [
@@ -49,6 +56,7 @@ class Theme {
             isset($data['children']) && !is_array($data['children']) ? $data['children'] : [],
             isset($data['expand']) && $data['expand'],
             isset($data['active']) && $data['active'],
+            !isset($data['toggle']) || $data['toggle']
         ];
     }
 
