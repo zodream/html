@@ -19,8 +19,13 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
 
 	public function __construct($total, $pageSize = 20, $key = 'page') {
 		$this->setTotal($total);
-		$this->_key = $key;
-		$this->_index = max(1, app('request')->get($key, 1));
+		if (is_numeric($key)) {
+            $this->_index = max(1, intval($key));
+        } else {
+            $this->_key = $key;
+            $this->_index = max(1, intval(app('request')->get($key, 1)));
+        }
+
 		$this->_pageSize = $pageSize;
 	}
 
@@ -92,12 +97,16 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
 		return $this->count();
 	}
 
+	public function getStart() {
+	    return max(($this->_index- 1) * $this->_pageSize, 0);
+    }
+
 	/**
 	 * 获取查询分页的值
 	 * @return mixed
 	 */
 	public function getLimit() {
-		return max(($this->_index- 1) * $this->_pageSize, 0) . ','.$this->_pageSize;
+		return $this->getStart() . ','.$this->_pageSize;
 	}
 
     /**
