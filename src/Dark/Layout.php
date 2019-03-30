@@ -5,7 +5,7 @@ use Zodream\Template\View;
 
 class Layout {
 
-    public static function main(View $view, array $menus = [], $name = 'ZoDream Admin', $hasPajax = false) {
+    public static function main(View $view, array $menus = [], $content = null, $name = 'ZoDream Admin', $hasPajax = false) {
         if ($hasPajax) {
             $view->registerJs('function parseAjaxUri(uri) { $.pjax({url: uri, container: \'#page-content\'});}')
                 ->registerJs('$(document).pjax(\'a\', \'#page-content\');', View::JQUERY_READY);
@@ -14,7 +14,6 @@ class Layout {
         $description = $view->get('description');
         $keywords = $view->get('keywords');
         $title = $view->get('title');
-        $content = $view->get('content');
         $header = $view->header();
         $footer = $view->footer();
         $menu = Theme::menu($menus);
@@ -52,14 +51,14 @@ class Layout {
 HTML;
     }
 
-    public static function mainIfPjax(View $view, array $menus = [], $name = 'ZoDream Admin') {
+    public static function mainIfPjax(View $view, array $menus = [], $content = null, $name = 'ZoDream Admin') {
         if (app('request')->isPjax()) {
             return sprintf('<title>%s</title>%s%s%s',
                 $view->get('title'), $view->renderHeader(),
-                $view->get('content'), $view->renderFooter());
+                $content, $view->renderFooter());
 
         }
-        return static::main($view, $menus, $name, true);
+        return static::main($view, $menus, $name, $content, true);
     }
 
 }
