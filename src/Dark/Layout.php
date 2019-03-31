@@ -58,7 +58,7 @@ HTML;
                 $content, $view->renderFooter());
 
         }
-        return static::main($view, $menus, $name, $content, true);
+        return static::main($view, $menus, $content, $name,true);
     }
 
 }
