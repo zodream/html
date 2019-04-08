@@ -63,9 +63,9 @@ class Progress {
         while ($this->canDoNext()) {
             $this->index ++;
             if ($this->index >= count($this->data)) {
-                return $this->finish($this->current());
+                return $this->finish();
             }
-            $this->play();
+            $this->play($this->current());
         }
         $spent = time() - $this->start_at;
         $this->spent += $spent;
