@@ -20,7 +20,7 @@ class Theme {
     }
 
     public static function menuItem($label, $url = 'javascript:;', $icon = '',
-                                    $children = [], $expand = false, $active = false, $toggle = true) {
+                                    $children = [], $expand = false, $active = false, $toggle = true, $options = []) {
         if ($toggle === false) {
             return '';
         }
@@ -31,7 +31,9 @@ class Theme {
             $text .= static::menu($children);
             $class = $expand ? 'expand' : null;
         }
-        return Html::li($text, compact('class'));
+        $options['class'] = trim(sprintf('%s %s',
+            isset($options['class']) ? $options['class'] : '', $class));
+        return Html::li($text, $options);
     }
 
     protected static function getMenuItem($data) {
@@ -53,10 +55,11 @@ class Theme {
             $data['label'],
             isset($data['url']) ? $data['url'] : 'javascript:;',
             isset($data['icon']) ? $data['icon'] : '',
-            isset($data['children']) && !is_array($data['children']) ? $data['children'] : [],
+            isset($data['children']) && is_array($data['children']) ? $data['children'] : [],
             isset($data['expand']) && $data['expand'],
             isset($data['active']) && $data['active'],
-            !isset($data['toggle']) || $data['toggle']
+            !isset($data['toggle']) || $data['toggle'],
+            isset($data['class']) ? ['class' => $data['class']] : []
         ];
     }
 
