@@ -210,8 +210,10 @@ HTML;
         $this->setBoxClass('file-input');
         $upload = __('Upload');
         $preview =  __('Preview');
+        $allow = isset($options['allow']) ? sprintf(' data-allow="%s"', $options['allow']) : '';
+        unset($options['allow']);
         return BaseForm::input('text', $options['name'], $this->value, $options). <<<HTML
-<button type="button" data-type="upload">{$upload}</button>
+<button type="button" data-type="upload"{$allow}>{$upload}</button>
 <button type="button" data-type="preview">{$preview}</button>
 HTML;
     }
@@ -239,8 +241,12 @@ HTML;
         if (empty($arguments[0])) {
             return $this;
         }
-        if (in_array($name, ['id', 'type', 'label', 'tip', 'items', 'value', 'options'])) {
+        if (in_array($name, ['id', 'type', 'label', 'tip', 'items', 'value'])) {
             $this->$name = $arguments[0];
+            return $this;
+        }
+        if ($name === 'options') {
+            $this->options = array_merge($this->options, $arguments[0]);
             return $this;
         }
         $this->options[$name] = $arguments[0];
