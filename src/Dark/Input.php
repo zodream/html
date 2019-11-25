@@ -212,10 +212,19 @@ HTML;
         $preview =  __('Preview');
         $allow = isset($options['allow']) ? sprintf(' data-allow="%s"', $options['allow']) : '';
         unset($options['allow']);
-        return BaseForm::input('text', $options['name'], $this->value, $options). <<<HTML
+        $html = <<<HTML
 <button type="button" data-type="upload"{$allow}>{$upload}</button>
 <button type="button" data-type="preview">{$preview}</button>
 HTML;
+        if (isset($options['dialog'])) {
+            $options['dialog'] = $options['dialog'] === 'multiple' ? 'multiple' : 'single';
+            $online =  __('Online');
+            $html .= <<<HTML
+
+<button type="button" data-type="images" data-mode="{$options['dialog']}">{$online}</button>
+HTML;
+        }
+        return BaseForm::input('text', $options['name'], $this->value, $options). $html;
     }
 
     protected function encodeTip() {
@@ -238,7 +247,7 @@ HTML;
         if (method_exists($this, $method)) {
             return $this->$method(...$arguments);
         }
-        if (empty($arguments[0])) {
+        if (empty($arguments)) {
             return $this;
         }
         if (in_array($name, ['id', 'type', 'label', 'tip', 'items', 'value'])) {
