@@ -16,7 +16,7 @@ class TableWidget extends Widget {
     );
     
     protected function run() {
-        $page = $this->get('page');
+        $page = $this->has('page') ? $this->get('page') : $this->get('data');
         if ($page instanceof Page) {
             $this->set(array(
                 'data' => $page->getPage(),

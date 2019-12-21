@@ -74,12 +74,32 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
      * @throws \Exception
      */
 	public function setPage($data) {
-		if ($data instanceof Builder) {
-			$data = $data->limit($this->getLimit())->all();
-		}
-		$this->setAttribute($data);
-		return $this;
+		return $this->clearAttribute()->appendPage($data);
 	}
+
+    /**
+     * 追加一页的数据
+     * @param array|Builder $data
+     * @return $this
+     * @throws \Exception
+     */
+    public function appendPage($data) {
+        if ($data instanceof Builder) {
+            $data = $data->limit($this->getLimit())->all();
+        }
+        $this->setAttribute($data);
+        return $this;
+    }
+
+	public function map(callable $cb) {
+	    foreach ($this->__attributes as $i => $item) {
+	        $res = call_user_func($cb, $item, $i);
+	        if (!is_null($res)) {
+                $this->__attributes[$i] = $res;
+            }
+        }
+	    return $this;
+    }
 
     /**
      * 判断是否为空
