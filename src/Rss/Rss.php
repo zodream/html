@@ -1,18 +1,17 @@
 <?php
 namespace Zodream\Html\Rss;
-/**
- * Created by PhpStorm.
- * User: zx648
- * Date: 2016/3/16
- * Time: 20:42
- */
-use Zodream\Service\Factory;
+
 
 class Rss extends BaseRss {
     protected $language = 'zh-CN';
-    protected $items = array();
+    /**
+     * @var RssItem[]
+     */
+    protected $items = [];
 
-    public function setLanguage($value) {
+    protected $image = [];
+
+    public function setLanguage(string $value) {
         $this->language = $value;
         return $this;
     }
@@ -22,28 +21,50 @@ class Rss extends BaseRss {
         return $this;
     }
 
-    public function toString() {
-        $out = '<?xml version="1.0" encoding="utf-8"?>' . "\n";
-        $out .= '<rss version="2.0" >' . "\n";
-
-        $out .= "<channel>\n";
-        $out .= '<title>' . $this->title . "</title>\n";
-        $out .= '<link>' . $this->link . "</link>\n";
-        $out .= '<description>' . $this->description . "</description>\n";
-        $out .= '<language>' . $this->language . "</language>\n";
-        $out .= '<pubDate>' . $this->getPubDate() . "</pubDate>\n";
-        foreach($this->tags as $key => $val) {
-            $out .= "<$key>$val</$key>\n";
+    /**
+     * @param string $url 图片
+     * @param string $link
+     * @param string|null $title
+     * @return Rss
+     */
+    public function setImage(string $url, string $link, string $title = null) {
+        $this->image = compact('url', 'link');
+        if (!empty($title)) {
+            $this->image['title'] = $title;
         }
-        foreach($this->items as $item) {
-            $out .= $item->show();
-        }
-        $out .= "</channel>\n";
-        $out .= '</rss>';
-        return $out;
+        return $this;
     }
 
-    public function Show() {
-         return Factory::response()->sendRss($this->toString());
+    public function __toString() {
+        $lines = [
+            '<?xml version="1.0" encoding="utf-8"?>',
+            '<rss version="2.0">',
+            '<channel>',
+            sprintf('<title>%s</title>', $this->title),
+            sprintf('<link>%s</link>', $this->link),
+            sprintf('<description>%s</description>', $this->description),
+            sprintf('<language>%s</language>', $this->language),
+            sprintf('<pubDate>%s</pubDate>', $this->getPubDate()),
+        ];
+        if (!empty($this->image)) {
+            $lines[] = '<image>';
+            foreach($this->image as $key => $val) {
+                $lines[] = sprintf('<%s>%s</%s>', $key, $val, $key);
+            }
+            $lines[] = '</image>';
+        }
+        foreach($this->tags as $key => $val) {
+            $lines[] = sprintf('<%s>%s</%s>', $key, $val, $key);
+        }
+        foreach($this->items as $item) {
+            $lines[] = (string)$item;
+        }
+        $lines[] = '</channel>';
+        $lines[] = '</rss>';
+        return implode("\n", $lines);
+    }
+
+    public function show() {
+         return app('response')->rss((string)$this);
     }
 }

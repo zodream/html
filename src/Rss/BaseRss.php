@@ -24,16 +24,20 @@ abstract class BaseRss {
     }
 
     public function setDescription($value) {
-        $this->description = $value;
+        if ($value !== null and is_string($value) === true) {
+            $value = str_replace('&', '&amp;', $value);
+        }
+        $this->description = sprintf('<![CDATA[%s]]>', $value);
         return $this;
     }
 
     public function setPubDate($time) {
-        if(strtotime($time) == false) {
+        if(strtotime($time) === false) {
             $this->pubDate = date('D, d M Y H:i:s ', $time) . 'GMT';
         } else {
             $this->pubDate = date('D, d M Y H:i:s ', strtotime($time)) . 'GMT';
         }
+        return $this;
     }
 
     public function getPubDate() {
@@ -48,5 +52,5 @@ abstract class BaseRss {
         return $this;
     }
 
-    abstract public function toString();
+    abstract public function __toString();
 }

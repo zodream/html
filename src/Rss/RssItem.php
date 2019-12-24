@@ -1,13 +1,6 @@
 <?php
 namespace Zodream\Html\Rss;
-/**
- *
- *
- * Created by PhpStorm.
- * User: zx648
- * Date: 2016/3/16
- * Time: 20:44
- */
+
 class RssItem extends BaseRss {
     protected $giud;
     protected $attachment;
@@ -19,24 +12,26 @@ class RssItem extends BaseRss {
         return $this;
     }
 
-    public function toString() {
-        $out = "<item>\n";
-        $out .= '<title>' . $this->title . "</title>\n";
-        $out .= '<link>' . $this->link . "</link>\n";
-        $out .= '<description>' . $this->description . "</description>\n";
-        $out .= '<pubDate>' . $this->getPubDate() . "</pubDate>\n";
+    public function __toString() {
+        $lines = [
+            '<item>',
+            sprintf('<title>%s</title>', $this->title),
+            sprintf('<link>%s</link>', $this->link),
+            sprintf('<description>%s</description>', $this->description),
+            sprintf('<pubDate>%s</pubDate>', $this->getPubDate()),
+        ];
         if($this->attachment != '') {
-            $out .= "<enclosure url='{$this->attachment}' length='{$this->length}' type='{$this->mimeType}' />";
+            $lines[] = sprintf('<enclosure url="%s" length="%s" type="%s" />', $this->attachment, $this->length, $this->mimeType);
         }
         if(empty($this->giud)) {
             $this->giud = $this->link;
         }
-        $out .= '<guid>' . $this->giud . "</guid>\n";
+        $lines[] = sprintf('<guid isPermaLink="true">%s</guid>', $this->giud);
         foreach($this->tags as $key => $val) {
-            $out .= "<$key>$val</$key\n>";
+            $lines[] = sprintf('<%s>%s</%s>', $key, $val, $key);
         }
-        $out .= "</item>\n";
-        return $out;
+        $lines[] = '</item>';
+        return implode("\n", $lines);
     }
 
     public function enclosure($url, $mimeType, $length) {
