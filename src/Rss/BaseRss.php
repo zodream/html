@@ -32,8 +32,8 @@ abstract class BaseRss {
     }
 
     public function setPubDate($time) {
-        if(strtotime($time) === false) {
-            $this->pubDate = date('D, d M Y H:i:s ', $time) . 'GMT';
+        if(is_numeric($time)) {
+            $this->pubDate = date('D, d M Y H:i:s ', intval($time)) . 'GMT';
         } else {
             $this->pubDate = date('D, d M Y H:i:s ', strtotime($time)) . 'GMT';
         }
