@@ -18,16 +18,15 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
 	private $_key = 'page';
 
 	public function __construct($total, $pageSize = 20, $key = 'page') {
-		$this->setTotal($total);
 		if (is_numeric($key)) {
             $this->_index = max(1, intval($key));
         } else {
             $this->_key = $key;
             $this->_index = max(1, intval(app('request')->get($key, 1)));
         }
-
 		$this->_pageSize = $pageSize;
-	}
+        $this->setTotal($total);
+    }
 
     /**
      * @return int
@@ -51,6 +50,13 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
      * @throws \Exception
      */
 	public function setTotal($total) {
+	    if (is_array($total)) {
+	        $this->_total = count($total);
+	        if ($this->isEmpty()) {
+	            $this->setPage(array_splice($total, $this->getStart(), $this->getPageSize()));
+            }
+	        return $this;
+        }
 		if ($total instanceof Builder) {
 			$this->_total = intval($total->count());
 			return $this;
