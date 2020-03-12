@@ -33,6 +33,8 @@ class Input {
 
     protected $tip;
 
+    protected $after;
+
     protected $type = 'text';
 
     protected $value;
@@ -123,7 +125,7 @@ class Input {
 <div class="input-group">
     <label for="{$this->id}">{$this->label}</label>
     <div class="{$this->boxClass}">
-        {$input}{$tip}
+        {$input}{$this->after}{$tip}
     </div>
 </div>
 HTML;
@@ -250,7 +252,7 @@ HTML;
         if (empty($arguments)) {
             return $this;
         }
-        if (in_array($name, ['id', 'type', 'label', 'tip', 'items', 'value'])) {
+        if (in_array($name, ['id', 'type', 'label', 'tip', 'items', 'value', 'after'])) {
             $this->$name = $arguments[0];
             return $this;
         }
