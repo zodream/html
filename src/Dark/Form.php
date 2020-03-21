@@ -34,6 +34,12 @@ class Form {
         ], $option));
     }
 
+    /**
+     * @param $name
+     * @param bool $required
+     * @param null $placeholder
+     * @return Input
+     */
     public static function text($name, $required = false, $placeholder = null) {
         return Theme::text($name, static::getModelValue($name), static::getModelLabel($name), $placeholder, $required);
     }
@@ -53,27 +59,59 @@ class Form {
         return Theme::password($name, $label ?: static::getModelLabel($name), $placeholder, $required);
     }
 
-
+    /**
+     * @param $name
+     * @param bool $required
+     * @param null $placeholder
+     * @return Input
+     */
     public static function email($name, $required = false, $placeholder = null) {
         return Theme::email($name, static::getModelValue($name), static::getModelLabel($name), $placeholder, $required);
     }
 
+    /**
+     * @param $name
+     * @param $data
+     * @return Input
+     */
     public static function radio($name, $data) {
         return Theme::radio($name, $data, static::getModelValue($name), static::getModelLabel($name));
     }
-
+    /**
+     * @param $name
+     * @param $data
+     * @return Input
+     */
     public static function checkbox($name, $data = null) {
         return Theme::checkbox($name, $data, static::getModelValue($name), static::getModelLabel($name));
     }
 
+    /**
+     * @param $name
+     * @param array $data
+     * @param bool $required
+     * @return Input
+     */
     public static function select($name, array $data, $required = false) {
         return Theme::select($name, $data, static::getModelValue($name), static::getModelLabel($name), $required);
     }
 
+    /**
+     * @param $name
+     * @param bool $required
+     * @param null $placeholder
+     * @return Input
+     */
     public static function file($name, $required = false, $placeholder = null) {
         return Theme::file($name, static::getModelValue($name), static::getModelLabel($name), $placeholder, $required);
     }
 
+    /**
+     * @param $name
+     * @param bool $required
+     * @param null $placeholder
+     * @return Input
+     */
     public static function textarea($name, $required = false, $placeholder = null) {
         return Theme::textarea($name, static::getModelValue($name), static::getModelLabel($name), $placeholder, $required);
     }
