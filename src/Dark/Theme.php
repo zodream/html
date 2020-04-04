@@ -87,6 +87,10 @@ class Theme {
         return Input::checkbox($name, $selected)->label($label)->items($data);
     }
 
+    public static function switch($name, $value = 0, $label = null) {
+        return Input::switch($name, $value)->label($label);
+    }
+
     public static function select($name, array $data, $selected = null, $label = null, $required = false) {
         return Input::select($name, $selected)->label($label)->items($data)->required($required);
     }

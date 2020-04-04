@@ -15,6 +15,7 @@ use Zodream\Html\Form as BaseForm;
  * @method Input password($name, $value)
  * @method Input textarea($name, $value)
  * @method Input file($name, $value)
+ * @method Input switch($name, $value)
  * @method Input id($id)
  * @method Input name($name)
  * @method Input value($value)
@@ -71,7 +72,7 @@ class Input {
     public function setLabel($label) {
         $this->label = $label;
         if (!isset($this->options['placeholder'])) {
-            $this->options['placeholder'] = sprintf('%s %s', __('Please input'), $label);
+            $this->options['placeholder'] = sprintf('%s %s', __('Please input'), strip_tags($label));
         }
         return $this;
     }
@@ -147,6 +148,19 @@ HTML;
 
     protected function encodeTextarea($options) {
         return Html::tag($this->type, $this->value, $options);
+    }
+
+    protected function encodeSwitch($options) {
+        $this->boxClass = 'check-toggle';
+        $id = $this->id;
+        $checked = (is_numeric($this->value) && $this->value == 1) ||
+            (is_bool($this->value) && $this->value) || $this->value === 'true';
+        $checkedAttr = $checked ? 'checked' : null;
+        return <<<HTML
+<input type="checkbox" id="{$id}" {$checkedAttr} onchange="$(this).next().next().val(this.checked ? 1 : 0);">
+<label for="{$id}"></label>
+<input type="hidden" name="{$options['name']}" value="{$this->value}"/>
+HTML;
     }
 
     protected function encodeRadio($options) {
@@ -242,7 +256,7 @@ HTML;
 
 
     public function __call($name, $arguments) {
-        if (in_array($name, ['text', 'email', 'url', 'password', 'file', 'radio', 'checkbox', 'select', 'textarea'])) {
+        if (in_array($name, ['text', 'email', 'url', 'password', 'file', 'radio', 'checkbox', 'select', 'textarea', 'switch'])) {
             return $this->setType($name, ...$arguments);
         }
         $method = 'set'.Str::studly($name);
