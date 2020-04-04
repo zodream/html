@@ -36,7 +36,7 @@ class Layout {
             {$name}
         </div>
     </header>
-    <div class="app-wrapper container">
+    <div class="app-wrapper">
         <div class="sidebar-container navbar">
             <span class="sidebar-container-toggle"></span>
             {$menu}
