@@ -2,8 +2,8 @@
 namespace Zodream\Html;
 
 use Zodream\Helpers\Arr;
-use Zodream\Infrastructure\Interfaces\JsonAble;
 use Zodream\Helpers\Json;
+use Zodream\Infrastructure\Contracts\JsonAble;
 
 /**
  * 无限树生成

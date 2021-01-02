@@ -3,10 +3,10 @@ namespace Zodream\Html;
 
 use Zodream\Database\Query\Builder;
 use Zodream\Infrastructure\Base\MagicObject;
-use Zodream\Infrastructure\Interfaces\ArrayAble;
-use Zodream\Infrastructure\Interfaces\JsonAble;
 use JsonSerializable;
 use ArrayIterator;
+use Zodream\Infrastructure\Contracts\ArrayAble;
+use Zodream\Infrastructure\Contracts\JsonAble;
 
 class Page extends MagicObject implements JsonAble, ArrayAble {
 	private $_total = 0;

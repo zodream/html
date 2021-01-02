@@ -1,9 +1,7 @@
 <?php
 namespace Zodream\Html;
 
-use Zodream\Service\Factory;
 use Zodream\Helpers\Str;
-use Zodream\Infrastructure\Http\Request;
 
 class VerifyCsrfToken {
 	/**
@@ -12,9 +10,9 @@ class VerifyCsrfToken {
      */
 	public static function create() {
         $token = Str::random(10);
-		Factory::session()->set('_token', $token);
-		Factory::response()->header->setCookie('XSRF-TOKEN', $token);
-		Factory::view()->set('_token', $token);
+		session()->set('_token', $token);
+		app('response')->header->setCookie('XSRF-TOKEN', $token);
+		view()->set('_token', $token);
 		return $token;
 	}
 
@@ -44,6 +42,6 @@ class VerifyCsrfToken {
 	 * @return string
 	 */
 	public static function get() {
-		return Factory::session()->token();
+		return session()->token();
 	}
 }

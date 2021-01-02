@@ -1,5 +1,7 @@
 <?php
 namespace Zodream\Html;
+use Zodream\Http\Uri;
+
 /**
  * 分页类
  * 使用方式:
@@ -184,7 +186,7 @@ class PageLink extends Widget {
 	 * @return string
 	 */
 	protected function getGoToPage() {
-	    $uri = app('request')->uri()
+	    $uri = (new Uri(app('request')->url()))
             ->removeData($this->get('key'));
 	    if (!$uri->hasData()) {
 	        $uri .= '?';
