@@ -1,5 +1,7 @@
 <?php
+declare(strict_types=1);
 namespace Zodream\Html;
+
 use Zodream\Http\Uri;
 
 /**
@@ -50,19 +52,21 @@ class PageLink extends Widget {
 	/**
 	 * 总页数
 	 */
-	protected $pageTotal = -1;
+	protected int $pageTotal = -1;
 
-	public function getPageTotal() {
-	    return $this->pageTotal = ceil($this->get('total') / $this->get('pageSize'));
+	public function getPageTotal(): int {
+	    $total = ceil($this->get('total') / $this->get('pageSize'));
+        $this->pageTotal = is_int($total) ? $total : 0;
+        return $this->pageTotal;
     }
 
 	/**
 	 * 返回分页
 	 * @return string
 	 */
-	public function getHtml() {
+	public function getHtml(): string {
 	   if ($this->getPageTotal() < 2) {
-	       return null;
+	       return '';
        }
        return str_ireplace(array(
 				'{total}',
@@ -91,7 +95,7 @@ class PageLink extends Widget {
 	 * 本页开始条数
 	 * @return int
 	 */
-	protected function getStart() {
+	protected function getStart(): int {
 		if ($this->get('total') == 0) {
 			return 0;
 		}
@@ -102,7 +106,7 @@ class PageLink extends Widget {
 	 * 本页结束条数
 	 * @return int
 	 */
-    protected function getEnd() {
+    protected function getEnd(): int {
 		return min($this->get('page') * $this->get('pageSize'), $this->get('total'));
 	}
 
@@ -110,7 +114,7 @@ class PageLink extends Widget {
 	 * 设置当前页大小
 	 * @return int
 	 */
-	protected function setPageSize() {
+	protected function setPageSize(): int {
 		return $this->getEnd() - $this->getStart() + 1;
 	}
 
@@ -118,26 +122,26 @@ class PageLink extends Widget {
 	 * 上一页
 	 * @return string
 	 */
-	protected function getPrevious() {
+	protected function getPrevious(): string {
 		if ($this->get('page')> 1) {
 			return $this->replaceLine($this->get('page') - 1, $this->get('previous'));
 		}
-		return null;
+		return '';
 	}
 
     /**
      * 获取省略
      * @return string
      */
-	protected function getOmit() {
-	    return $this->replaceTemplate(null, $this->get('omit'));
+	protected function getOmit(): string {
+	    return $this->replaceTemplate('', $this->get('omit'));
     }
 
 	/**
 	 * 分页数字列表
 	 * @return string
 	 */
-	protected function getPageList() {
+	protected function getPageList(): string {
 		$linkPage = '';
 		$linkPage .= $this->replaceLine(1);
 		$lastList = floor($this->get('length') / 2);
@@ -174,19 +178,19 @@ class PageLink extends Widget {
 	 * 下一页
 	 * @return string
 	 */
-	protected function getNext() {
+	protected function getNext(): string {
 		if ($this->get('page')< $this->pageTotal) {
 			return $this->replaceLine($this->get('page')+ 1, $this->get('next'));
 		}
-		return null;
+		return '';
 	}
 
 	/**
 	 * 跳转按钮
 	 * @return string
 	 */
-	protected function getGoToPage() {
-	    $uri = (new Uri(app('request')->url()))
+	protected function getGoToPage(): string {
+	    $uri = (new Uri(request()->url()))
             ->removeData($this->get('key'));
 	    if (!$uri->hasData()) {
 	        $uri .= '?';
@@ -221,7 +225,7 @@ class PageLink extends Widget {
 	 * @param bool|string $result 条件
 	 * @return string
 	 */
-	protected function replaceTemplate($url, $text, $result = TRUE) {
+	protected function replaceTemplate(string $url, string $text, $result = true): string {
 		$template = ($result ? $this->get('active') : $this->get('common'));
 		$html = str_replace('{url}', $url, $template);
 		return str_replace('{text}', $text, $html);
@@ -231,7 +235,7 @@ class PageLink extends Widget {
 	 * 执行
 	 * @return string
 	 */
-	protected function run() {
+	protected function run(): string {
 		return $this->getHtml();
 	}
 }

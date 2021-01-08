@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Zodream\Html;
 
 use Zodream\Database\Query\Builder;
@@ -9,20 +10,20 @@ use Zodream\Infrastructure\Contracts\ArrayAble;
 use Zodream\Infrastructure\Contracts\JsonAble;
 
 class Page extends MagicObject implements JsonAble, ArrayAble {
-	private $_total = 0;
+	private int $_total = 0;
 
-	private $_index = 1;
+	private int $_index = 1;
 	
-	private $_pageSize = 20;
+	private int $_pageSize = 20;
 
-	private $_key = 'page';
+	private string $_key = 'page';
 
 	public function __construct($total, $pageSize = 20, $key = 'page') {
 		if (is_numeric($key)) {
             $this->_index = max(1, intval($key));
         } else {
             $this->_key = $key;
-            $this->_index = max(1, intval(app('request')->get($key, 1)));
+            $this->_index = max(1, intval(request($key, 1)));
         }
 		$this->_pageSize = $pageSize;
         $this->setTotal($total);
@@ -31,7 +32,7 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
     /**
      * @return int
      */
-    public function getPageSize() {
+    public function getPageSize(): int {
         return $this->_pageSize;
     }
 
@@ -39,7 +40,7 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
 	 * 获取总共的数据
 	 * @return int
 	 */
-	public function getTotal() {
+	public function getTotal(): int {
 		return $this->_total;
 	}
 
@@ -69,7 +70,7 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
 	 * 获取一页的数据
 	 * @return array
 	 */
-	public function getPage() {
+	public function getPage(): array {
 		return $this->getAttribute();
 	}
 
@@ -111,19 +112,19 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
      * 判断是否为空
      * @return bool
      */
-	public function isEmpty() {
-	    return $this->getPageCount() == 0;
+	public function isEmpty(): bool {
+	    return $this->getPageCount() === 0;
     }
 
 	/**
 	 * 获取一页数据的长度
 	 * @return int
 	 */
-	public function getPageCount() {
+	public function getPageCount(): int {
 		return $this->count();
 	}
 
-	public function getStart() {
+	public function getStart(): int {
 	    return max(($this->_index- 1) * $this->_pageSize, 0);
     }
 
@@ -131,7 +132,7 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
 	 * 获取查询分页的值
 	 * @return mixed
 	 */
-	public function getLimit() {
+	public function getLimit(): string {
 		return $this->getStart() . ','.$this->_pageSize;
 	}
 
@@ -139,15 +140,15 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
      * 是否还有更多
      * @return bool
      */
-	public function hasMore() {
+	public function hasMore(): bool {
 	    return $this->_index * $this->_pageSize < $this->_total;
     }
 
     /**
      * 页码
-     * @return int|mixed
+     * @return int
      */
-    public function getIndex() {
+    public function getIndex(): int {
 	    return $this->_index;
     }
 
@@ -157,7 +158,7 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
 	 * @return string
 	 * @throws \Exception
 	 */
-	public function getLink($option = array()) {
+	public function getLink(array $option = []): string {
 		$option['total'] = $this->_total;
 		$option['pageSize'] = $this->_pageSize;
 		$option['page'] = $this->_index;
