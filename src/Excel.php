@@ -76,14 +76,14 @@ class Excel implements ExpertObject {
     /**
      * @return string
      */
-    public function getName() {
+    public function getName(): string {
         return $this->title .'.xls';
     }
 
     /**
      * @return string
      */
-    public function getType() {
+    public function getType(): string {
         return 'xls';
     }
 }
