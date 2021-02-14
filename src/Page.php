@@ -25,7 +25,7 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
             $this->_key = $key;
             $this->_index = max(1, intval(request($key, 1)));
         }
-		$this->_pageSize = $pageSize;
+		$this->_pageSize = is_int($pageSize) ? $pageSize : intval($pageSize);
         $this->setTotal($total);
     }
 
