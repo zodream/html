@@ -1,6 +1,6 @@
 <?php
+declare(strict_types=1);
 namespace Zodream\Html;
-
 
 use Zodream\Helpers\Arr;
 use Zodream\Infrastructure\Support\Html;
