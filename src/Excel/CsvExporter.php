@@ -1,23 +1,17 @@
 <?php
-namespace Zodream\Html;
-/**
- * Created by PhpStorm.
- * User: zx648
- * Date: 2016/7/16
- * Time: 18:24
- */
-use Zodream\Infrastructure\Contracts\Response\ExpertObject;
+declare(strict_types=1);
+namespace Zodream\Html\Excel;
 
-class Excel implements ExpertObject {
 
-    public $readerObj;
-    public $charset = 'utf-8';
+use Zodream\Infrastructure\Contracts\Response\ExportObject;
+
+class CsvExporter implements ExportObject {
+
+    public string $charset = 'utf-8';
     
-    protected $title;
+    protected array $firstRow;
     
-    protected $firstRow;
-    
-    protected $data;
+    protected array $data;
 
     /**
      * Excel constructor.
@@ -26,7 +20,8 @@ class Excel implements ExpertObject {
      *          如：array('name'=>'名字', 'title' => '标题') 键名与后面的数组$data的子元素键名关联
      * @param $data      array
      */
-    public function __construct($title = '', $firstRow = array(), $data = array()) {
+    public function __construct(
+        protected $title = '', $firstRow = [], $data = []) {
         $this->title = $title;
         if (empty($firstRow) && !empty($data)) {
             $firstRow = array_keys($data[0]);
@@ -40,7 +35,7 @@ class Excel implements ExpertObject {
      * @param string $output
      * @return string
      */
-    public function excelExportIconv($output){
+    public function excelExportIconv(string $output) {
         return iconv($this->charset, 'GBK', $output);
     }
 
