@@ -56,7 +56,7 @@ class PageLink extends Widget {
 
 	public function getPageTotal(): int {
 	    $total = ceil($this->get('total') / $this->get('pageSize'));
-        $this->pageTotal = is_int($total) ? $total : 0;
+        $this->pageTotal = intval($total);
         return $this->pageTotal;
     }
 
@@ -208,7 +208,7 @@ class PageLink extends Widget {
         ], $this->get('goto'));
 	}
 	
-	protected function replaceLine($page, $text = null) {
+	protected function replaceLine(int $page, ?string $text = null) {
 		return $this->replaceTemplate(
             url([
                 $this->get('key') => $page
@@ -218,17 +218,17 @@ class PageLink extends Widget {
 		);
 	}
 
-	/**
-	 * 模板替换
-	 * @param string $url 替换内容
-	 * @param string $text
-	 * @param bool|string $result 条件
-	 * @return string
-	 */
-	protected function replaceTemplate(string $url, string $text, $result = true): string {
+    /**
+     * 模板替换
+     * @param string $url 替换内容
+     * @param string|int $text
+     * @param bool|string $result 条件
+     * @return string
+     */
+	protected function replaceTemplate(string $url, string|int $text, $result = true): string {
 		$template = ($result ? $this->get('active') : $this->get('common'));
 		$html = str_replace('{url}', $url, $template);
-		return str_replace('{text}', $text, $html);
+		return str_replace('{text}', (string)$text, $html);
 	}
 
 	/**
