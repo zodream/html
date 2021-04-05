@@ -165,7 +165,7 @@ class PageLink extends Widget {
 			$linkPage .= $this->getOmit();
 		}
 		for (; $i <= $length; $i ++) {
-			$linkPage .= $this->replaceLine($i);
+			$linkPage .= $this->replaceLine((int)$i);
 		}
 		if ($this->get('page') < $this->pageTotal - $lastList && $length < $this->pageTotal - 1) {
 			$linkPage .= $this->getOmit();
