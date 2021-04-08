@@ -19,8 +19,8 @@ use JetBrains\PhpStorm\Pure;
 
 class MarkDown {
 
-    public static function parse(string $text, bool $safeMode = true): string {
-        return (new static)->setSafeMode($safeMode)->text($text);
+    public static function parse(string $text, bool $safeMode = true, array $lazyLoad = []): string {
+        return (new static)->setSafeMode($safeMode)->setLazyLoad($lazyLoad)->text($text);
     }
 
     public function text(string $text): string {
@@ -149,7 +149,7 @@ class MarkDown {
     # Lines
     #
 
-    protected array $BlockTypes = array(
+    protected array $blockTypes = array(
         '#' => array('Header'),
         '*' => array('Rule', 'List'),
         '+' => array('List'),
@@ -258,11 +258,11 @@ class MarkDown {
 
             $blockTypes = $this->unmarkedBlockTypes;
 
-            if (isset($this->BlockTypes[$marker]))
+            if (isset($this->blockTypes[$marker]))
             {
-                foreach ($this->BlockTypes[$marker] as $blockType)
+                foreach ($this->blockTypes[$marker] as $blockType)
                 {
-                    $blockTypes []= $blockType;
+                    $blockTypes[] = $blockType;
                 }
             }
 
@@ -1797,26 +1797,26 @@ class MarkDown {
         return $markup;
     }
 
-    protected function elements(array $Elements): string
+    protected function elements(array $elements): string
     {
         $markup = '';
 
         $autoBreak = true;
 
-        foreach ($Elements as $Element)
+        foreach ($elements as $element)
         {
-            if (empty($Element))
+            if (empty($element))
             {
                 continue;
             }
 
-            $autoBreakNext = (isset($Element['autobreak'])
-                ? $Element['autobreak'] : isset($Element['name'])
+            $autoBreakNext = (isset($element['autobreak'])
+                ? $element['autobreak'] : isset($element['name'])
             );
             // (autobreak === false) covers both sides of an element
             $autoBreak = !$autoBreak ? $autoBreak : $autoBreakNext;
 
-            $markup .= ($autoBreak ? "\n" : '') . $this->element($Element);
+            $markup .= ($autoBreak ? "\n" : '') . $this->element($element);
             $autoBreak = $autoBreakNext;
         }
 
