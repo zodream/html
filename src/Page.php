@@ -18,13 +18,12 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
 
 	private string $_key = 'page';
 
-	public function __construct($total, $pageSize = 20, $key = 'page') {
-		if (is_numeric($key)) {
-            $this->_index = max(1, intval($key));
-        } else {
-            $this->_key = $key;
-            $this->_index = max(1, intval(request($key, 1)));
+	public function __construct($total, $pageSize = 20, $key = 'page', int $page = -1) {
+	    if (is_numeric($key)) {
+	        list($key, $page) = ['page', $key];
         }
+        $this->_key = $key;
+        $this->_index = max(1, $page >= 0 ? $page : intval(request($key, 1)));
 		$this->_pageSize = is_int($pageSize) ? $pageSize : intval($pageSize);
         $this->setTotal($total);
     }
