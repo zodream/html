@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Zodream\Html\Rss;
 /**
  * Created by PhpStorm.
@@ -7,13 +8,13 @@ namespace Zodream\Html\Rss;
  * Time: 21:06
  */
 abstract class BaseRss {
-    protected $tags = array();
-    protected $pubDate;
-    protected $title;
-    protected $link;
-    protected $description;
+    protected array $tags = [];
+    protected string $pubDate = '';
+    protected string $title = '';
+    protected string $link = '';
+    protected string $description = '';
 
-    public function setLink($link) {
+    public function setLink(string $link) {
         $this->link = $link;
         return $this;
     }
@@ -24,14 +25,14 @@ abstract class BaseRss {
     }
 
     public function setDescription($value) {
-        if ($value !== null and is_string($value) === true) {
+        if ($value !== null && is_string($value)) {
             $value = str_replace('&', '&amp;', $value);
         }
         $this->description = sprintf('<![CDATA[%s]]>', $value);
         return $this;
     }
 
-    public function setPubDate($time) {
+    public function setPubDate(string|int $time) {
         if(is_numeric($time)) {
             $this->pubDate = date('D, d M Y H:i:s ', intval($time)) . 'GMT';
         } else {
@@ -47,7 +48,7 @@ abstract class BaseRss {
         return $this->pubDate;
     }
 
-    public function addTag($tag, $value) {
+    public function addTag(string $tag, string $value) {
         $this->tags[$tag] = $value;
         return $this;
     }

@@ -1,15 +1,16 @@
 <?php
+declare(strict_types=1);
 namespace Zodream\Html\Rss;
 
 
 class Rss extends BaseRss {
-    protected $language = 'zh-CN';
+    protected string $language = 'zh-CN';
     /**
      * @var RssItem[]
      */
-    protected $items = [];
+    protected array $items = [];
 
-    protected $image = [];
+    protected array $image = [];
 
     public function setLanguage(string $value) {
         $this->language = $value;

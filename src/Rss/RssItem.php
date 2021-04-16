@@ -1,14 +1,15 @@
 <?php
+declare(strict_types=1);
 namespace Zodream\Html\Rss;
 
 class RssItem extends BaseRss {
-    protected $giud;
-    protected $attachment;
-    protected $length;
-    protected $mimeType;
+    protected string|int $guid = '';
+    protected string $attachment = '';
+    protected int $length = 0;
+    protected string $mimeType = '';
 
-    public function setGiud($giud) {
-        $this->giud = $giud;
+    public function setGuid(string|int $guid) {
+        $this->guid = $guid;
         return $this;
     }
 
@@ -20,13 +21,13 @@ class RssItem extends BaseRss {
             sprintf('<description>%s</description>', $this->description),
             sprintf('<pubDate>%s</pubDate>', $this->getPubDate()),
         ];
-        if($this->attachment != '') {
+        if($this->attachment !== '') {
             $lines[] = sprintf('<enclosure url="%s" length="%s" type="%s" />', $this->attachment, $this->length, $this->mimeType);
         }
-        if(empty($this->giud)) {
-            $this->giud = $this->link;
+        if(empty($this->guid)) {
+            $this->guid = $this->link;
         }
-        $lines[] = sprintf('<guid isPermaLink="true">%s</guid>', $this->giud);
+        $lines[] = sprintf('<guid isPermaLink="true">%s</guid>', $this->guid);
         foreach($this->tags as $key => $val) {
             $lines[] = sprintf('<%s>%s</%s>', $key, $val, $key);
         }
@@ -34,7 +35,14 @@ class RssItem extends BaseRss {
         return implode("\n", $lines);
     }
 
-    public function enclosure($url, $mimeType, $length) {
+    /**
+     * 添加媒体资源
+     * @param string $url
+     * @param string $mimeType 文件的类型 例如 audio/mp3
+     * @param int $length 文件的大小
+     * @return $this
+     */
+    public function enclosure(string $url, string $mimeType, int $length) {
         $this->attachment = $url;
         $this->mimeType  = $mimeType;
         $this->length   = $length;
