@@ -2,7 +2,6 @@
 declare(strict_types=1);
 namespace Zodream\Html\Excel;
 
-
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -18,10 +17,18 @@ abstract class Importer implements ArrayAble {
         return $row;
     }
 
+    /**
+     * 标题行在第几行
+     * @return int
+     */
     public function headingRow(): int {
         return 1;
     }
 
+    /**
+     * 第几张表
+     * @return int
+     */
     public function sheetIndex(): int {
         return 0;
     }
