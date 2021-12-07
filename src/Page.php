@@ -169,7 +169,7 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
 		return $this->getLink();
 	}
 
-    public function jsonSerialize() {
+    public function jsonSerialize(): mixed {
         return array_map(function ($value) {
             if ($value instanceof JsonSerializable) {
                 return $value->jsonSerialize();
@@ -183,7 +183,7 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
         }, $this->toArray());
     }
 
-    public function getIterator() {
+    public function getIterator(): \Traversable {
         return new ArrayIterator($this->getAttribute());
     }
 
