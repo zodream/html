@@ -50,10 +50,10 @@ class Tree implements JsonAble {
     }
 
     /**
-     * @name 生成树形结构
+     * 生成树形结构
      * @return mixed 多维数组
      */
-    public function makeTree(){
+    public function makeTree(): array {
         return $this->_makeTreeCore(0, $this->data, self::NORMAL);
     }
 
@@ -61,7 +61,7 @@ class Tree implements JsonAble {
      * 生成以ID 作为键的数组
      * @return array
      */
-    public function makeIdTree(){
+    public function makeIdTree(): array {
         return $this->_makeTreeCore(0, $this->data, self::ID_AS_KEY);
     }
 
@@ -69,7 +69,7 @@ class Tree implements JsonAble {
      * 生成线性结构, 便于HTML输出, 参数同上
      * @return array
      */
-    public function makeTreeForHtml(){
+    public function makeTreeForHtml(): array {
         return $this->_makeTreeCore(0, $this->data, self::LINEAR);
     }
 
