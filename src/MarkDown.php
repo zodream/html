@@ -30,9 +30,7 @@ class MarkDown {
         $markup = $this->elements($elements);
 
         # trim line breaks
-        $markup = trim($markup, "\n");
-
-        return $markup;
+        return trim($markup, "\n");
     }
 
     protected function textElements(string $text): array {
@@ -55,7 +53,6 @@ class MarkDown {
     #
     # Setters
     #
-
     public function setBreaksEnabled(bool $breaksEnabled) {
         $this->breaksEnabled = $breaksEnabled;
         return $this;
@@ -465,9 +462,9 @@ class MarkDown {
         return $block;
     }
 
-    #
+    /*
     # Fenced Code
-
+    */
     protected function blockFencedCode($line): ?array {
         $marker = $line['text'][0];
 
@@ -689,7 +686,7 @@ class MarkDown {
 
             unset($block['li']);
 
-            $text = isset($matches[1]) ? $matches[1] : '';
+            $text = $matches[1] ?? '';
 
             $block['indent'] = $line['indent'];
 
@@ -795,14 +792,8 @@ class MarkDown {
 
             return $block;
         }
-
-        if ( ! isset($block['interrupted']))
-        {
-            $block['element']['handler']['argument'] []= $line['text'];
-
-            return $block;
-        }
-        return null;
+        $block['element']['handler']['argument'] []= $line['text'];
+        return $block;
     }
 
     #
@@ -896,7 +887,7 @@ class MarkDown {
 
             $this->definitionData['Reference'][$id] = array(
                 'url' => $matches[2],
-                'title' => isset($matches[3]) ? $matches[3] : null,
+                'title' => $matches[3] ?? null,
             );
 
             return array(
@@ -955,7 +946,7 @@ class MarkDown {
                 $alignment = 'left';
             }
 
-            if (substr($dividerCell, - 1) === ':')
+            if (str_ends_with($dividerCell, ':'))
             {
                 $alignment = $alignment === 'left' ? 'center' : 'right';
             }
@@ -1526,7 +1517,7 @@ class MarkDown {
 
     protected function inlineSpecialCharacter(array $excerpt): ?array
     {
-        if (substr($excerpt['text'], 1, 1) !== ' ' && strpos($excerpt['text'], ';') !== false
+        if (substr($excerpt['text'], 1, 1) !== ' ' && str_contains($excerpt['text'], ';')
             && preg_match('/^&(#?+[0-9a-zA-Z]++);/', $excerpt['text'], $matches)
         ) {
             return array(
@@ -1810,9 +1801,7 @@ class MarkDown {
                 continue;
             }
 
-            $autoBreakNext = (isset($element['autobreak'])
-                ? $element['autobreak'] : isset($element['name'])
-            );
+            $autoBreakNext = $element['autobreak'] ?? isset($element['name']);
             // (autobreak === false) covers both sides of an element
             $autoBreak = !$autoBreak ? $autoBreak : $autoBreakNext;
 
