@@ -135,7 +135,7 @@ HTML;
 
     protected function encodeInput($type) {
         $options = $this->options;
-        $options['class'] = sprintf('form-control %s', isset($options['class']) ? $options['class'] : '');
+        $options['class'] = sprintf('form-control %s', $options['class'] ?? '');
         if (!isset($options['id'])) {
             $options['id'] = $this->id;
         }

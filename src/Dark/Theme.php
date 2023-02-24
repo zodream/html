@@ -32,7 +32,7 @@ class Theme {
             $class = $expand ? 'expand' : null;
         }
         $options['class'] = trim(sprintf('%s %s',
-            isset($options['class']) ? $options['class'] : '', $class));
+            $options['class'] ?? '', $class));
         return Html::li($text, $options);
     }
 
@@ -53,8 +53,8 @@ class Theme {
         }
         return [
             $data['label'],
-            isset($data['url']) ? $data['url'] : 'javascript:;',
-            isset($data['icon']) ? $data['icon'] : '',
+            $data['url'] ?? 'javascript:;',
+            $data['icon'] ?? '',
             isset($data['children']) && is_array($data['children']) ? $data['children'] : [],
             isset($data['expand']) && $data['expand'],
             isset($data['active']) && $data['active'],
