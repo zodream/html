@@ -19,11 +19,11 @@ class Form {
             return null;
         }
         if (strpos($name, '.') <= 0) {
-            return static::$model->getAttributeValue($name);
+            return static::$model->getAttributeSource($name);
         }
         $args = explode('.', $name);
         $main = array_shift($args);
-        $val = static::$model->getAttributeValue($main);
+        $val = static::$model->getAttributeSource($main);
         if (empty($val)) {
             return null;
         }
