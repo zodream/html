@@ -41,7 +41,7 @@ class VerifyCsrfToken {
 	 * 获取已经生成的 token
 	 * @return string
 	 */
-	public static function get() {
-		return session()->token();
+	public static function get(): string {
+		return (string)session()->token();
 	}
 }

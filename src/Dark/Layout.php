@@ -5,10 +5,12 @@ use Zodream\Template\View;
 
 class Layout {
 
-    public static function main(View $view, array $menus = [], $content = null, $name = 'ZoDream Admin', $hasPajax = false) {
+    public static function main(View $view, array $menus = [],
+                                mixed $content = null,
+                                string $name = 'ZoDream Admin', string $headerAction = '', bool $hasPajax = false) {
         if ($hasPajax) {
             $view->registerJs('function parseAjaxUri(uri) { $.pjax({url: uri, container: \'#page-content\'});}')
-                ->registerJs('$(document).pjax(\'a\', \'#page-content\');', View::JQUERY_READY);
+                ->registerJs('$(document).pjax(\'a\', \'#page-content\').on(\'pjax:complete\', function() {$(\'.app-header-container .header-body\').text(document.title);});', View::JQUERY_READY);
         }
         $lang = $view->get('language', 'zh-CN');
         $description = $view->get('description');
@@ -31,18 +33,27 @@ class Layout {
        {$header}
    </head>
    <body>
-   <header>
-        <div class="container">
-            {$name}
-        </div>
-    </header>
     <div class="app-wrapper">
-        <div class="sidebar-container navbar">
+        <div class="app-mask"></div>
+        <div class="sidebar-container">
             <span class="sidebar-container-toggle"></span>
             {$menu}
         </div>
-        <div id="page-content" class="main-container">
+        <div class="main-container">
+            <div class="app-header-container">
+                <div class="header-icon">
+                    <span class="sidebar-container-toggle"></span>
+                </div>
+                <div class="header-body">
+                    {$name}
+                </div>
+               <div class="header-action">
+                    {$headerAction}
+                </div>
+            </div>
+            <div id="page-content" class="app-main">
             {$content}
+            </div>        
         </div>
     </div>
    {$footer}
@@ -51,14 +62,14 @@ class Layout {
 HTML;
     }
 
-    public static function mainIfPjax(View $view, array $menus = [], $content = null, $name = 'ZoDream Admin') {
+    public static function mainIfPjax(View $view, array $menus = [], mixed $content = '', string $name = 'ZoDream Admin', string $headerAction = '') {
         if (app('request')->isPjax()) {
             return sprintf('<title>%s</title>%s%s%s',
-                $view->get('title'), $view->renderHeader(),
-                $content, $view->renderFooter());
+                $view->get('title'), $view->header(false),
+                $content, $view->footer(false));
 
         }
-        return static::main($view, $menus, $content, $name,true);
+        return static::main($view, $menus, $content, $name, $headerAction, true);
     }
 
 }

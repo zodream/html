@@ -8,7 +8,7 @@ use Zodream\Infrastructure\Support\Html;
 
 class Theme {
 
-    public static function menu(array $data) {
+    public static function menu(array $data, array $option = []) {
         $html = '';
         foreach ($data as $item) {
             if (empty($item)) {
@@ -16,7 +16,7 @@ class Theme {
             }
             $html .= static::menuItem(...self::getMenuItem($item));
         }
-        return Html::ul($html);
+        return Html::ul($html, $option);
     }
 
     public static function menuItem($label, $url = 'javascript:;', $icon = '',
@@ -24,14 +24,16 @@ class Theme {
         if ($toggle === false) {
             return '';
         }
-        $text = empty($icon) ? '' : sprintf('<i class="%s"></i>', $icon);
-        $text = Html::a(sprintf('%s<span>%s</span>', $text, $label), $url === false ? 'javascript:;' : $url);
+        $text = empty($icon) ? '' : sprintf('<i class="%s menu-icon"></i>', $icon);
+        $text = Html::a(sprintf('%s<span class="menu-name">%s</span>%s', $text, $label,
+            !empty($children) ? '<i class="menu-icon-arrow"></i>' : ''
+        ), $url === false ? 'javascript:;' : $url);
         $class = $active ? 'active' : null;
         if (!empty($children)) {
-            $text .= static::menu($children);
+            $text .= static::menu($children, ['class' => 'menu-children']);
             $class = $expand ? 'expand' : null;
         }
-        $options['class'] = trim(sprintf('%s %s',
+        $options['class'] = trim(sprintf('%s %s menu-item',
             $options['class'] ?? '', $class));
         return Html::li($text, $options);
     }

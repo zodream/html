@@ -12,7 +12,7 @@ use Zodream\Html\Form as BaseForm;
  * @method Input text($name, $value)
  * @method Input url($name, $value)
  * @method Input email($name, $value)
- * @method Input password($name, $value)
+ * @method Input password($name)
  * @method Input textarea($name, $value)
  * @method Input file($name, $value)
  * @method Input switch($name, $value)

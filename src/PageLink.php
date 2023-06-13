@@ -41,7 +41,7 @@ class PageLink extends Widget {
 		'next' => '》',
         'omit' => '...',
         'goto' => '&nbsp;<input type="text" value="{page}" 
-            onkeydown="if ( event.keyCode==13) {
+            onkeydown="if ( event.key==\'Enter\') {
                 var page = (this.value > {pageTotal}) ? {pageTotal} :this.value;
             }
             location =\'{url}&{key}=\'+page+\'\'}" style="width:25px;"/>
@@ -212,7 +212,7 @@ class PageLink extends Widget {
 		return $this->replaceTemplate(
             url([
                 $this->get('key') => $page
-            ], null, true, false),
+            ], [], true, false),
             $text == null ? $page : $text,
             $page == $this->get('page')
 		);
