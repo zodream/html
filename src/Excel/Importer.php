@@ -87,7 +87,7 @@ abstract class Importer implements ArrayAble {
         return $cell->getFormattedValue();
     }
 
-    public function toArray() {
+    public function toArray(): array {
         return $this->items;
     }
 }

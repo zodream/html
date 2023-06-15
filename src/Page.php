@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace Zodream\Html;
 
+use Zodream\Database\Contracts\SqlBuilder;
 use Zodream\Database\Query\Builder;
 use Zodream\Infrastructure\Base\MagicObject;
 use JsonSerializable;
@@ -79,7 +80,7 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
      * @return $this
      * @throws \Exception
      */
-	public function setPage($data) {
+	public function setPage(array|SqlBuilder $data) {
 		return $this->clearAttribute()->appendPage($data);
 	}
 
@@ -89,9 +90,9 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
      * @return $this
      * @throws \Exception
      */
-    public function appendPage($data) {
+    public function appendPage(array|SqlBuilder $data) {
         if ($data instanceof Builder) {
-            $data = $data->limit($this->getLimit())->all();
+            $data = $data->limit($this->getLimit())->get();
         }
         $this->setAttribute($data);
         return $this;
@@ -122,6 +123,10 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
 	public function getPageCount(): int {
 		return $this->count();
 	}
+
+    public function getPageTotal(): int {
+        return (int)ceil($this->_total / $this->_pageSize);
+    }
 
 	public function getStart(): int {
 	    return max(($this->_index- 1) * $this->_pageSize, 0);
@@ -192,7 +197,7 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
      *
      * @return array
      */
-    public function toArray() {
+    public function toArray(): array {
         $data = array_map(function ($value) {
             if ($value instanceof ArrayAble) {
                 return $value->toArray();
