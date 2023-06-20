@@ -7,7 +7,7 @@ use Zodream\Infrastructure\Support\Html;
 
 class Form {
 
-    public static function open($action = null, $method = 'POST', $options = []) {
+    public static function open(mixed $action = null, string $method = 'POST', array $options = []) {
         $method = strtoupper($method);
         $spoofedMethods = ['DELETE', 'PATCH', 'PUT'];
         if (isset($options['files']) && $options['files']) {
@@ -30,12 +30,12 @@ class Form {
         return $html;
     }
 
-    public static function token() {
+    public static function token(): string {
         $token = VerifyCsrfToken::get();
         return self::hidden('_token', $token);
     }
 
-    public static function close() {
+    public static function close(): string {
         return '</form>';
     }
 

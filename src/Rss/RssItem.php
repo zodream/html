@@ -13,7 +13,7 @@ class RssItem extends BaseRss {
         return $this;
     }
 
-    public function __toString() {
+    public function __toString(): string {
         $lines = [
             '<item>',
             sprintf('<title>%s</title>', $this->title),

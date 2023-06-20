@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Zodream\Html\Bootstrap;
 /**
  * Created by PhpStorm.
@@ -10,11 +11,11 @@ use Zodream\Html\Widget;
 
 class BreadcrumbWidget extends Widget {
 
-    protected $default = [
+    protected array $default = [
         'links' => []
     ];
 
-    protected function run() {
+    protected function run(): string {
         $links = $this->get('links');
         $content = null;
         $count = count($links);

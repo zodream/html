@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Zodream\Html\Dark;
 
 use Zodream\Helpers\Str;
@@ -28,32 +29,31 @@ use Zodream\Html\Form as BaseForm;
  * @method Input class($class)
  */
 class Input {
-    protected $id;
+    protected string $id = '';
 
-    protected $label;
+    protected string $label = '';
 
-    protected $tip;
+    protected string $tip = '';
 
-    protected $after;
+    protected string $after = '';
 
-    protected $type = 'text';
+    protected string $type = 'text';
 
-    protected $value;
+    protected array $options = [];
 
-    protected $options = [];
+    protected mixed $items = null;
 
-    protected $items;
+    protected string $boxClass = '';
 
-    protected $boxClass;
-
-    public function __construct($name = null, $value = null) {
+    public function __construct(
+        ?string $name = null,
+        protected mixed $value = null) {
         if (!empty($name)) {
             $this->setName($name);
         }
-        $this->value = $value;
     }
 
-    public function setName($name) {
+    public function setName(string $name) {
         $this->options['name'] = $name;
         if (empty($id)) {
             $this->id = str_replace(['[', ']', '#', '.'], ['_', '', '', ''], $name);
@@ -69,7 +69,7 @@ class Input {
      * @return Input
      * @throws \Exception
      */
-    public function setLabel($label) {
+    public function setLabel(string $label) {
         $this->label = $label;
         if (!isset($this->options['placeholder'])) {
             $this->options['placeholder'] = sprintf('%s %s', __('Please input'), strip_tags($label));
@@ -81,7 +81,7 @@ class Input {
      * @param mixed $boxClass
      * @return Input
      */
-    public function setBoxClass($boxClass) {
+    public function setBoxClass(string $boxClass) {
         $this->boxClass = $boxClass;
         return $this;
     }
@@ -90,7 +90,7 @@ class Input {
      * @param mixed $items
      * @return Input
      */
-    public function setItems($items){
+    public function setItems(mixed $items){
         if (!is_array($items)) {
             $this->items = $items;
             return $this;
@@ -108,7 +108,7 @@ class Input {
      * @param null $value
      * @return Input
      */
-    public function setType($type, $name = null, $value = null) {
+    public function setType(string $type, ?string $name = null, mixed $value = null) {
         $this->type = $type;
         if (!empty($name)) {
             $this->setName($name);
@@ -119,7 +119,7 @@ class Input {
         return $this;
     }
 
-    public function html() {
+    public function html(): string {
         $input = $this->encodeInput($this->type);
         $tip = $this->encodeTip();
         return <<<HTML
@@ -133,7 +133,7 @@ HTML;
 
     }
 
-    protected function encodeInput($type) {
+    protected function encodeInput(string $type): string {
         $options = $this->options;
         $options['class'] = sprintf('form-control %s', $options['class'] ?? '');
         if (!isset($options['id'])) {
@@ -146,11 +146,11 @@ HTML;
         return BaseForm::input($type, $options['name'], $this->value, $options);
     }
 
-    protected function encodeTextarea($options) {
+    protected function encodeTextarea(array $options): string {
         return Html::tag($this->type, $this->value, $options);
     }
 
-    protected function encodeSwitch($options) {
+    protected function encodeSwitch(array $options): string {
         $this->boxClass = 'check-toggle';
         $id = $this->id;
         $checked = (is_numeric($this->value) && $this->value == 1) ||
@@ -163,7 +163,7 @@ HTML;
 HTML;
     }
 
-    protected function encodeRadio($options) {
+    protected function encodeRadio(array $options): string {
         $html =  '';
         $i = 0;
         foreach ($this->items as $key => $item) {
@@ -179,7 +179,7 @@ HTML;
         return $html;
     }
 
-    protected function encodeCheckbox($options) {
+    protected function encodeCheckbox(array $options): string {
         if (!is_array($this->items)) {
             $this->boxClass = 'check-toggle';
             $id = $this->id.'_1';
@@ -206,7 +206,7 @@ HTML;
         return $html;
     }
 
-    protected function encodeSelect($options) {
+    protected function encodeSelect(array $options): string {
         $html =  '';
         foreach ($this->items as $key => $item) {
             $html .= Html::tag('option', $item, array(
@@ -222,7 +222,7 @@ HTML;
         ]);
     }
 
-    protected function encodeFile($options) {
+    protected function encodeFile(array $options): string {
         $this->setBoxClass('file-input');
         $upload = __('Upload');
         $preview =  __('Preview');
@@ -243,19 +243,19 @@ HTML;
         return BaseForm::input('text', $options['name'], $this->value, $options). $html;
     }
 
-    protected function encodeTip() {
+    protected function encodeTip(): string {
         if (empty($this->tip)) {
             return '';
         }
         return '<div class="input-tip">'.$this->tip.'</div>';
     }
 
-    public function __toString() {
+    public function __toString(): string {
         return $this->html();
     }
 
 
-    public function __call($name, $arguments) {
+    public function __call(string $name, array $arguments): Input {
         if (in_array($name, ['text', 'email', 'url', 'password', 'file', 'radio', 'checkbox', 'select', 'textarea', 'switch'])) {
             return $this->setType($name, ...$arguments);
         }
@@ -278,19 +278,20 @@ HTML;
         return $this;
     }
 
-    public static function __callStatic($name, $arguments) {
+    public static function __callStatic(string $name, array $arguments): Input {
         return (new static())->$name(...$arguments);
     }
 
     /**
      * 转化为键值对数组
      * @param array $data
-     * @param string $value
-     * @param string $key
+     * @param string|array $value
+     * @param string|array $key
      * @param array $prepend
      * @return array|mixed
      */
-    protected static function getColumnsSource($data, $value = 'name', $key = 'id', array $prepend = []) {
+    protected static function getColumnsSource(array $data, string|array $value = 'name',
+                                               string|array $key = 'id', array $prepend = []): mixed {
         if (is_array($value)) {
             list($prepend, $value, $key) = [$value, 'name', 'id'];
         } elseif (is_array($key)) {

@@ -1,26 +1,19 @@
 <?php
+declare(strict_types=1);
 namespace Zodream\Html;
-/**
- * Created by PhpStorm.
- * User: zx648
- * Date: 2016/7/16
- * Time: 18:24
- */
-use Zodream\Infrastructure\Interfaces\ExpertObject;
 
-class ShortCut implements ExpertObject {
-    
-    protected $title;
-    protected $url;
 
+use Zodream\Infrastructure\Contracts\Response\ExportObject;
+
+class ShortCut implements ExportObject {
     /**
      * Excel constructor.
      * @param string $title
      * @param string $url
      */
-    public function __construct($title, $url) {
-        $this->title = $title;
-        $this->url = $url;
+    public function __construct(
+        protected string $title,
+        protected string $url) {
     }
 
 
@@ -39,14 +32,14 @@ Prop3=19,2';
     /**
      * @return string
      */
-    public function getName() {
+    public function getName(): string {
         return $this->title .'.url';
     }
 
     /**
      * @return string
      */
-    public function getType() {
+    public function getType(): string {
         return 'exe';
     }
 }

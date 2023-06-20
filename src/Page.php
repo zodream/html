@@ -19,7 +19,9 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
 
 	private string $_key = 'page';
 
-	public function __construct($total, $pageSize = 20, $key = 'page', int $page = -1) {
+	public function __construct(
+        mixed $total, int $pageSize = 20,
+                                string|int $key = 'page', int $page = -1) {
 	    if (is_numeric($key)) {
 	        list($key, $page) = ['page', $key];
         }
@@ -50,7 +52,7 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
      * @return $this
      * @throws \Exception
      */
-	public function setTotal($total) {
+	public function setTotal(mixed $total) {
 	    if (is_array($total)) {
 	        $this->_total = count($total);
 	        if ($this->isEmpty()) {

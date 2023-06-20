@@ -19,13 +19,13 @@ abstract class BaseRss {
         return $this;
     }
 
-    public function setTitle($title) {
+    public function setTitle(string $title) {
         $this->title = $title;
         return $this;
     }
 
-    public function setDescription($value) {
-        if ($value !== null && is_string($value)) {
+    public function setDescription(mixed $value) {
+        if (is_string($value)) {
             $value = str_replace('&', '&amp;', $value);
         }
         $this->description = sprintf('<![CDATA[%s]]>', $value);
@@ -41,7 +41,7 @@ abstract class BaseRss {
         return $this;
     }
 
-    public function getPubDate() {
+    public function getPubDate(): string {
         if(empty($this->pubDate)) {
             return date('D, d M Y H:i:s ') . 'GMT';
         }
@@ -53,5 +53,5 @@ abstract class BaseRss {
         return $this;
     }
 
-    abstract public function __toString();
+    abstract public function __toString(): string;
 }

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Zodream\Html;
 
 use Zodream\Helpers\Str;
@@ -9,18 +10,16 @@ use Zodream\Helpers\Time;
  * @package Zodream\Html
  */
 class Progress {
+    protected int $start_at = 0;
+    protected int $spent = 0;
+    protected array $data = [];
+    protected int $index = -1;
+    protected bool $booted = false;
+    protected string $cache_key = '';
+    protected int $max_time = 10;
 
-    protected $options = [];
-    protected $start_at = 0;
-    protected $spent = 0;
-    protected $data = [];
-    protected $index = -1;
-    protected $booted = false;
-    protected $cache_key;
-    protected $max_time = 10;
-
-    public function __construct($options = []) {
-        $this->options = $options;
+    public function __construct(
+        protected array $options = []) {
         $this->start_at = time();
     }
 
@@ -33,10 +32,10 @@ class Progress {
         return $this;
     }
 
-    public function init() {
+    public function init(): void {
     }
 
-    protected function doInit() {
+    protected function doInit(): void {
         if ($this->booted) {
             return;
         }
@@ -46,7 +45,7 @@ class Progress {
         $this->booted = true;
     }
 
-    public function current() {
+    public function current(): mixed {
         return $this->data[$this->index];
     }
 
@@ -55,7 +54,7 @@ class Progress {
      * @return array
      * @throws \Exception
      */
-    public function invoke($index = -1) {
+    public function invoke(int $index = -1): array {
         $this->doInit();
         if ($index >= 0) {
             $this->setStart($index);
@@ -84,14 +83,14 @@ class Progress {
 
     }
 
-    protected function canDoNext() {
+    protected function canDoNext(): bool {
         if (app('request')->isCli()) {
             return true;
         }
         return time() - $this->start_at < $this->max_time;
     }
 
-    public function finish($expire = 600) {
+    public function finish(int $expire = 600): array {
         $this->spent += time() - $this->start_at;
         if (app('request')->isCli()) {
             echo sprintf('本次耗时：%s秒', $this->spent);
@@ -110,15 +109,15 @@ class Progress {
         ];
     }
 
-    public function __invoke($index = -1) {
+    public function __invoke(int $index = -1): array {
         return $this->invoke($index);
     }
 
-    public function __sleep() {
+    public function __sleep(): array {
         return ['options', 'data', 'index', 'booted', 'cache_key', 'max_time', 'spent'];
     }
 
-    public function __wakeup() {
+    public function __wakeup(): void {
         $this->start_at = time();
     }
 }

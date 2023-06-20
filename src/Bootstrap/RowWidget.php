@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Zodream\Html\Bootstrap;
 /**
  * Created by PhpStorm.
@@ -10,14 +11,14 @@ use Zodream\Html\Widget;
 
 class RowWidget extends Widget {
 
-    protected $default = array(
+    protected array $default = array(
         'size' => ['md'],
         'columns' => [
             //'2' => ''
         ]
     );
 
-    protected function run() {
+    protected function run(): string {
         $content = null;
         $size = $this->get('size');
         foreach ($this->get('columns', array()) as $key => $item) {

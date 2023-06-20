@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Zodream\Html\Bootstrap;
 /**
  * Created by PhpStorm.
@@ -11,11 +12,11 @@ use Zodream\Html\Widget;
 use Zodream\Helpers\Arr;
 
 class TableWidget extends Widget {
-    protected $default = array(
+    protected array $default = array(
         'class' => 'table table-hover'
     );
     
-    protected function run() {
+    protected function run(): string {
         $page = $this->has('page') ? $this->get('page') : $this->get('data');
         if ($page instanceof Page) {
             $this->set(array(
@@ -33,7 +34,7 @@ class TableWidget extends Widget {
      * 获取列名
      * @return array
      */
-    protected function getColumns() {
+    protected function getColumns(): array {
         if ($this->has('columns')) {
             return $this->get('columns', array());
         }
@@ -47,7 +48,7 @@ class TableWidget extends Widget {
         return $columns;
     }
     
-    protected function getHead() {
+    protected function getHead(): string {
         $content = '';
         foreach ($this->getColumns() as $key => $value) {
             if (is_array($value)) {
@@ -63,11 +64,11 @@ class TableWidget extends Widget {
         return Html::tag('thead', Html::tag('tr', $content));
     }
     
-    protected function getBody() {
+    protected function getBody(): string {
         $data = $this->get('data');
         $columns = $this->getColumns();
         if (empty($data) || empty($columns)) {
-            return null;
+            return '';
         }
         $content = '';
         foreach ($data as $item) {
@@ -76,7 +77,7 @@ class TableWidget extends Widget {
         return Html::tag('tbody', $content);
     }
     
-    protected function getBodyOne($item, array $columns) {
+    protected function getBodyOne(array|string $item, array $columns): string {
         $content = '';
         foreach ($columns as $key => $value) {
             $k = $key;
@@ -97,9 +98,9 @@ class TableWidget extends Widget {
         return Html::tag('tr', $content);
     }
     
-    protected function getFoot() {
+    protected function getFoot(): string {
         if (!$this->has('foot')) {
-            return null;
+            return '';
         }
         $count = count($this->getColumns());
         $content = '';

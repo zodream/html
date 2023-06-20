@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace Zodream\Html\Excel;
 
 
+use IteratorAggregate;
 use Zodream\Infrastructure\Contracts\Response\ExportObject;
 
 class CsvExporter implements ExportObject {
@@ -10,19 +11,17 @@ class CsvExporter implements ExportObject {
     public string $charset = 'utf-8';
     
     protected array $firstRow;
-    
-    protected array $data;
 
     /**
      * Excel constructor.
      * @param $title     string
      * @param $firstRow  array
      *          如：array('name'=>'名字', 'title' => '标题') 键名与后面的数组$data的子元素键名关联
-     * @param $data      array
+     * @param array|IteratorAggregate $data array
      */
     public function __construct(
-        protected $title = '', $firstRow = [], $data = []) {
-        $this->title = $title;
+        protected string $title = '', array $firstRow = [],
+        protected array|IteratorAggregate $data = []) {
         if (empty($firstRow) && !empty($data)) {
             $firstRow = array_keys($data[0]);
         }
@@ -35,8 +34,8 @@ class CsvExporter implements ExportObject {
      * @param string $output
      * @return string
      */
-    public function excelExportIconv(string $output) {
-        return iconv($this->charset, 'GBK', $output);
+    public function excelExportIconv(string $output): string {
+        return (string)iconv($this->charset, 'GBK', $output);
     }
 
     /**

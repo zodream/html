@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Zodream\Html\Bootstrap;
 /**
  * Created by PhpStorm.
@@ -10,7 +11,7 @@ use Zodream\Html\Widget;
 
 class TabWidget extends Widget {
 
-    protected $default = [
+    protected array $default = [
         'items' => [
             [
                 'title' => '',
@@ -20,7 +21,7 @@ class TabWidget extends Widget {
         ]
     ];
 
-    protected function run() {
+    protected function run(): string {
         $data = $this->get();
         $title = $content = null;
         $hasActive = false;
@@ -49,7 +50,7 @@ class TabWidget extends Widget {
      * @param $key
      * @return array
      */
-    protected function convert($item, $key) {
+    protected function convert(mixed $item, string|int $key): array {
         if (!is_array($item)) {
             return [$key, $item, false];
         }
@@ -65,7 +66,7 @@ class TabWidget extends Widget {
         return [$key, $item[0], $item[1]];
     }
 
-    protected function getTitle($title, $id, $isActive = false) {
+    protected function getTitle(string $title, string $id, bool $isActive = false): string {
         $active = null;
         if ($isActive) {
             $active = ' class="active"';
@@ -76,7 +77,7 @@ HTML;
         return $html;
     }
 
-    protected function getContent($content, $id, $isActive = false) {
+    protected function getContent(string $content, string $id, bool $isActive = false): string {
         $active = null;
         if ($isActive) {
             $active = ' active';

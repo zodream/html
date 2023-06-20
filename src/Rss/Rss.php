@@ -36,7 +36,7 @@ class Rss extends BaseRss {
         return $this;
     }
 
-    public function __toString() {
+    public function __toString(): string {
         $lines = [
             '<?xml version="1.0" encoding="utf-8"?>',
             '<rss version="2.0">',

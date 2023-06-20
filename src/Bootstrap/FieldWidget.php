@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Zodream\Html\Bootstrap;
 /**
  * Created by PhpStorm.
@@ -9,7 +10,7 @@ namespace Zodream\Html\Bootstrap;
 use Zodream\Html\Widget;
 
 class FieldWidget extends Widget {
-    protected $default = array(
+    protected array $default = array(
         'type' => 'text',
         'value' => '',
         'label' => '',
@@ -17,7 +18,7 @@ class FieldWidget extends Widget {
         'template' => ''
     );
 
-    protected function run() {
+    protected function run(): string {
         $option = $this->get('option');
         if (!empty($option)) {
             $this->set($option);
@@ -58,7 +59,7 @@ class FieldWidget extends Widget {
         return $this->input($type);
     }
     
-    public function hidden() {
+    public function hidden(): string {
         return Html::tag('input', '', array(
             'type' => 'hidden',
             'name' => $this->get('name'),
@@ -66,21 +67,21 @@ class FieldWidget extends Widget {
         ));
     }
 
-    public function radio() {
+    public function radio(): string {
         return $this->specialInput();
     }
 
-    protected function specialInput($type = 'radio', $name = '{name}') {
+    protected function specialInput($type = 'radio', $name = '{name}'): string {
         $content = '';
         foreach ($this->get('groups', array()) as $key => $value) {
             if (!is_integer($key)) {
                 $val = $key;
             } elseif (is_array($value)) {
-                $val = isset($value['value']) ? $value['value'] : $key;
+                $val = $value['value'] ?? $key;
             } else {
                 $val = $value;
             }
-            $label = is_string($value) ? $value : isset($value['text']) ? $value['text'] : $val;
+            $label = (is_string($value) ? $value : isset($value['text'])) ? $value['text'] : $val;
             $content .= Html::tag('label', Html::tag(
                     'input',
                     '',
@@ -97,11 +98,11 @@ class FieldWidget extends Widget {
         return $this->replace($content);
     }
 
-    public function checkBox(){
+    public function checkBox(): string {
         return $this->specialInput('checkbox', $this->get('name').'[]');
     }
 
-    public function select() {
+    public function select(): string {
         $content = '';
         foreach ($this->get('items', array()) as $key => $value) {
             $content .= Html::tag('option', $value, array(
@@ -120,23 +121,23 @@ class FieldWidget extends Widget {
         )));
     }
 
-    public function text() {
+    public function text(): string {
         return $this->input(__FUNCTION__);
     }
 
-    public function password() {
+    public function password(): string {
         return $this->input(__FUNCTION__);
     }
 
-    public function email() {
+    public function email(): string {
         return $this->input(__FUNCTION__);
     }
 
-    public function number() {
+    public function number(): string {
         return $this->input(__FUNCTION__);
     }
 
-    public function button() {
+    public function button(): string {
         $this->set('template', '
 <div class="form-group">
 	<div class="col-md-10 col-md-offset-2">
@@ -149,7 +150,7 @@ class FieldWidget extends Widget {
         )));
     }
 
-    public function input($type = 'text') {
+    public function input(string $type = 'text'): string {
         $option = $this->get('required,placeholder,class form-control');
         return $this->replace(Html::tag('input', '', array_merge(array(
             'type' => $type,
@@ -159,7 +160,7 @@ class FieldWidget extends Widget {
         ), $option)));
     }
 
-    public function textArea() {
+    public function textArea(): string {
         $option = $this->get('required,placeholder,class form-control,rows 3,cols');
         return $this->replace(Html::tag('textarea', '{value}', array_merge(array(
             'name' => '{name}',
@@ -169,7 +170,7 @@ class FieldWidget extends Widget {
 
 
 
-    protected function replace($inputTemplate) {
+    protected function replace(array $inputTemplate): string {
         $input = str_replace(array(
             '{name}',
             '{value}'

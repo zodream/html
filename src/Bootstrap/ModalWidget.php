@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 namespace Zodream\Html\Bootstrap;
 
 use Zodream\Html\Widget;
 class ModalWidget extends Widget {
 
-    protected $default = [
+    protected array $default = [
         'id' => 'modal',
         'size' => '',
         'title' => null,
@@ -12,7 +13,7 @@ class ModalWidget extends Widget {
         'foot' => ''
     ];
 
-    protected function run() {
+    protected function run(): string {
         $id = $this->get('id');
         $size = $this->get('size');
         if (!empty($size)) {
@@ -37,34 +38,32 @@ HTML;
         return $html;
     }
 
-    protected function getFoot() {
+    protected function getFoot(): string {
         $footer = $this->get('foot');
         if (is_null($footer)) {
-            return null;
+            return '';
         }
-        $html = <<<HTML
+        return <<<HTML
        <div class="modal-footer">
        {$footer}
       </div> 
 HTML;
-        return $html;
     }
     /**
      * @return string
      */
-    protected function getTitle() {
+    protected function getTitle(): string {
         $id = $this->get('id');
         $title = $this->get('title');
         if (is_null($title)) {
-            return null;
+            return '';
         }
-        $html = <<<HTML
+        return <<<HTML
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
     <h4 class="modal-title" id="{$id}Label">{$title}</h4>
 </div>
 HTML;
-        return $html;
     }
 
     /**
@@ -72,7 +71,7 @@ HTML;
      * @param $id
      * @return string
      */
-    public static function addEvent($id = 'modal') {
+    public static function addEvent(string $id = 'modal'): string {
         return ' data-toggle="modal" data-target="#'.$id.'" ';
     }
 
@@ -80,7 +79,7 @@ HTML;
      * ADD MODAL CLOSE EVENT
      * @return string
      */
-    public static function addClose() {
+    public static function addClose(): string {
         return ' data-dismiss="modal" ';
     }
 }

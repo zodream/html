@@ -1,4 +1,5 @@
-<?php 
+<?php
+declare(strict_types=1);
 namespace Zodream\Html;
 
 use Zodream\Helpers\Arr;
@@ -12,7 +13,7 @@ use Zodream\Infrastructure\Contracts\JsonAble;
  * @time 2015-12-1
  */
 class Tree implements JsonAble {
-    protected $config = array(
+    protected array $config = array(
         /* 主键 */
         'primary_key' 	=> 'id',
         /* 父键 */
@@ -32,19 +33,19 @@ class Tree implements JsonAble {
     const ID_AS_KEY = 'id as key';
 
     /* 结果集 */
-    protected $result = [];
+    protected array $result = [];
 
     /* 层次暂存 */
-    protected $level = [];
+    protected array $level = [];
 
-    protected $data = [];
+    protected array $data = [];
 
-    public function __construct($data, array $option = []) {
+    public function __construct(mixed $data, array $option = []) {
         $this->config = array_merge($this->config, $option);
         $this->set($data);
     }
 
-    public function set($data) {
+    public function set(mixed $data) {
         $this->data = $this->_format(Arr::toArray($data));
         return $this;
     }
@@ -78,7 +79,7 @@ class Tree implements JsonAble {
      * @param array $args
      * @return array
      */
-    private function _format(array $args){
+    private function _format(array $args): array {
         $data = [];
         foreach($args as $item){
             $id = $item[$this->config['primary_key']];
@@ -91,11 +92,11 @@ class Tree implements JsonAble {
     /**
      * 生成树核心, 私有方法
      * @param $index
-     * @param $data
+     * @param array $data
      * @param string $type
      * @return array
      */
-    private function _makeTreeCore($index, $data, $type = self::LINEAR) {
+    private function _makeTreeCore(mixed $index, array $data, string $type = self::LINEAR): array {
         $args = [];
         if (!isset($data[$index])) {
             return [];

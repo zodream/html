@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Zodream\Html;
 
 use Zodream\Helpers\Str;
@@ -8,7 +9,7 @@ class VerifyCsrfToken {
 	 * 生成 token
 	 * @return string
      */
-	public static function create() {
+	public static function create(): string {
         $token = Str::random(10);
 		session()->set('_token', $token);
 		app('response')->header->setCookie('XSRF-TOKEN', $token);
@@ -20,14 +21,14 @@ class VerifyCsrfToken {
 	 * 验证
 	 * @return bool
 	 */
-	public static function verify() {
+	public static function verify(): bool {
 		if (self::get() === static::getTokenFromRequest()) {
 			return true;
 		}
 		throw new \Exception(' token 验证失败！');
 	}
 
-    protected static function getTokenFromRequest() {
+    protected static function getTokenFromRequest(): string {
         $token = app('request')->request('_token') ?: app('request')->header('X-CSRF-TOKEN');
 
         if (! $token && $header = app('request')->header('X-XSRF-TOKEN')) {

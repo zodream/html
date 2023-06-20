@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Zodream\Html\Bootstrap;
 /**
  * Created by PhpStorm.
@@ -11,7 +12,7 @@ use Zodream\Html\Widget;
 
 class NavBarWidget extends Widget {
 
-    protected $default = array(
+    protected array $default = array(
         'brand' => null,
         'full' => false,
         'class' => ['default'],
@@ -19,7 +20,7 @@ class NavBarWidget extends Widget {
         'items' => []
     );
 
-    protected function run() {
+    protected function run(): string {
         $brand = $this->get('brand');
         if (!is_array($brand)) {
             $brand = ['label' => $brand];
@@ -35,7 +36,7 @@ class NavBarWidget extends Widget {
             $this->get('class'));
     }
 
-    public function nav($content, $args = array()) {
+    public function nav(string $content, mixed $args = array()): string {
         $class = ['navbar'];
         foreach ((array)$args as $item) {
             $class[] = 'navbar-'.$item;
@@ -45,7 +46,7 @@ class NavBarWidget extends Widget {
         ));
     }
 
-    public function head($brand, $url = '#') {
+    public function head(string $brand, string $url = '#'): string {
         $html = null;
         $tag = $this->get('tag', 1);
         if (!empty($brand)) {
@@ -66,14 +67,14 @@ class NavBarWidget extends Widget {
 HTML;
     }
 
-    public function collapse($content) {
+    public function collapse(string $content): string {
         return Html::div($content, [
             'class' => 'collapse navbar-collapse',
             'id' => 'zodream-navbar-collapse-'.$this->get('tag', 1)
         ]);
     }
 
-    public function menu(array $args, $left = true) {
+    public function menu(array $args, bool $left = true): string {
         $content = null;
         foreach ($args as $item) {
             $content .= $this->menuItem($item);
@@ -83,7 +84,7 @@ HTML;
         ]);
     }
 
-    public function menuItem($args) {
+    public function menuItem(mixed $args): string {
         if (!is_array($args)) {
             $args = ['label' => $args];
         }
@@ -118,13 +119,13 @@ HTML;
             $args['option']);
     }
 
-    public function form($content, $left = true) {
+    public function form(string $content, bool $left = true): string {
         return Html::form($content, [
             'class' => 'navbar-form navbar-'.($left ? 'left' : 'right')
         ]);
     }
 
-    public function search($url, $tag = 'search') {
+    public function search(string $url, string $tag = 'search'): string {
         $url = url()->to($url);
         return <<<HTML
 <form class="navbar-form navbar-left" action="{$url}" method="get" role="search">

@@ -1,16 +1,17 @@
 <?php
+declare(strict_types=1);
 namespace Zodream\Html\Bootstrap;
 
 use Zodream\Disk\Directory;
 use Zodream\Disk\File;
-use Zodream\Template\Theme as BaseTheme;
+use Zodream\Template\ITheme;
 
-class Theme extends BaseTheme {
+class Theme implements ITheme {
 
     /**
      * @return Directory
      */
-    public function getRoot() {
+    public function getRoot(): Directory {
         return new Directory(__DIR__);
     }
 
@@ -18,7 +19,7 @@ class Theme extends BaseTheme {
      * @param $name
      * @return File
      */
-    public function getFile($name) {
+    public function getFile($name): File {
         return $this->getRoot()->file($name);
     }
 }

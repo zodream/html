@@ -12,7 +12,7 @@ use Zodream\Http\Uri;
 
 class PageLink extends Widget {
 	
-	protected $default = array(
+	protected array $default = array(
 		'total' => 0, //总条数
 		'pageSize' => 20,
         'key' => 'page',
@@ -208,7 +208,7 @@ class PageLink extends Widget {
         ], $this->get('goto'));
 	}
 	
-	protected function replaceLine(int $page, ?string $text = null) {
+	protected function replaceLine(int $page, ?string $text = null): string {
 		return $this->replaceTemplate(
             url([
                 $this->get('key') => $page
@@ -225,7 +225,7 @@ class PageLink extends Widget {
      * @param bool|string $result 条件
      * @return string
      */
-	protected function replaceTemplate(string $url, string|int $text, $result = true): string {
+	protected function replaceTemplate(string $url, string|int $text, bool $result = true): string {
 		$template = ($result ? $this->get('active') : $this->get('common'));
 		$html = str_replace('{url}', $url, $template);
 		return str_replace('{text}', (string)$text, $html);

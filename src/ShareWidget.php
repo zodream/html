@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Zodream\Html;
 /**
  * Created by PhpStorm.
@@ -8,7 +9,7 @@ namespace Zodream\Html;
  */
 class ShareWidget extends Widget {
 
-    protected $_data = array(
+    protected array $_data = array(
         'text' => null,
         'type' => 'slide',
         'left' => true,
@@ -21,7 +22,7 @@ class ShareWidget extends Widget {
 <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a></div>'
     );
 
-    private function _getType() {
+    private function _getType(): string {
         if ($this->get('type') === 'slide' || $this->has('slide')) {
             return '"slide":'.$this->json($this->get('slide', array(
                 'type' => 'slide',
@@ -33,7 +34,7 @@ class ShareWidget extends Widget {
         return '"share":'.$this->json($this->get('share', array()));
     }
 
-    private function _getCommon() {
+    private function _getCommon(): string {
         return '"common":'.$this->json($this->get('common', array(
             'bdSnsKey' => (array)$this->get('key'),
             'bdText' => $this->get('text'),
@@ -45,7 +46,7 @@ class ShareWidget extends Widget {
         )));
     }
 
-    protected function run() {
+    protected function run(): string {
         $config = $this->_getCommon().','.$this->_getType();
         if ($this->has('image')) {
             $config .= ',"image":'.$this->json($this->get('image'));

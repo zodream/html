@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Zodream\Html\Bootstrap;
 /**
  * Created by PhpStorm.
@@ -11,13 +12,13 @@ use Zodream\Html\Widget;
 
 
 class FormWidget extends Widget {
-    protected $default = array(
+    protected array $default = array(
         'data' => array(),
         'fields' => array(),
         'class' => 'form-horizontal'
     );
     
-    protected function run() {
+    protected function run(): string {
         $this->set('action', url()->to($this->get('action')));
         $content = '';
         $data = (array)$this->get('data');
@@ -59,7 +60,7 @@ class FormWidget extends Widget {
         );
     }
 
-    public static function begin($data = array(), $option = array()) {
+    public static function begin(array $data = array(), array $option = array()) {
         $instance = new static;
         $option['data'] = $data;
         $instance->set($option);
@@ -77,7 +78,7 @@ class FormWidget extends Widget {
      * @param string $content
      * @return $this
      */
-    public function html($content) {
+    public function html(string $content) {
         if (func_num_args() == 1) {
             $this->_data['fields'][] = $content;
             return $this;
@@ -86,15 +87,15 @@ class FormWidget extends Widget {
         return $this;
     }
     
-    public function hidden($name, $option = array()) {
+    public function hidden(string $name, array $option = array()) {
         return $this->input($name, __FUNCTION__, $option);
     }
 
-    public function text($name, $option = array()) {
+    public function text(string $name, array $option = array()) {
         return $this->input($name, __FUNCTION__, $option);
     }
 
-    public function input($name, $type = 'text', $option = array()) {
+    public function input(string $name, string $type = 'text', array $option = array()) {
         if (!in_array($type, array('radio', 'checkbox'))) {
             $this->__attributes['fields'][$name] = array(
                 'type' => $type,
@@ -105,7 +106,7 @@ class FormWidget extends Widget {
         if (!isset($this->_data['fields'][$name])) {
             $this->__attributes['fields'][$name] = array(
                 'type' => $type,
-                'label' => isset($option['label']) ? $option['label'] : null,
+                'label' => $option['label'] ?? null,
                 'groups' => array()
             );
         }
@@ -113,7 +114,7 @@ class FormWidget extends Widget {
         return $this;
     }
 
-    public function textArea($name, $option = array()) {
+    public function textArea(string $name, array $option = array()) {
         $this->__attributes['fields'][$name] = array(
             'type' => 'textarea',
             'option' => $option
@@ -121,15 +122,15 @@ class FormWidget extends Widget {
         return $this;
     }
 
-    public function email($name, $option = array()) {
+    public function email(string $name, array $option = array()) {
         return $this->input($name, __FUNCTION__, $option);
     }
 
-    public function number($name, $option = array()) {
+    public function number(string $name, array $option = array()) {
         return $this->input($name, __FUNCTION__, $option);
     }
 
-    public function password($name, $option = array()) {
+    public function password(string $name, array $option = array()) {
         return $this->input($name, __FUNCTION__, $option);
     }
 
@@ -139,7 +140,7 @@ class FormWidget extends Widget {
      * @param array $option
      * @return FormWidget
      */
-    public function checkbox($name, $option = array()) {
+    public function checkbox(string $name, array $option = array()) {
         return $this->input($name, __FUNCTION__, $option);
     }
 
@@ -150,11 +151,11 @@ class FormWidget extends Widget {
      * @param array $option
      * @return FormWidget
      */
-    public function radio($name, $option = array()) {
+    public function radio(string $name, array $option = array()) {
         return $this->input($name, __FUNCTION__, $option);
     }
 
-    public function select($name, array $items, $option = array()) {
+    public function select(string $name, array $items, array $option = array()) {
         $this->__attributes['fields'][$name] = array(
             'type' => 'select',
             'items' => $items,
@@ -165,21 +166,22 @@ class FormWidget extends Widget {
 
     /**
      * 列表框
-     * @param $name 名称
+     * @param string $name 名称
      * @param $items 列表项
      * @param string $size 显示个数
      * @param bool $allowMultiple 是否允许多选
      * @param array $option
      * @return FormWidget
      */
-    public function listBox($name, $items, $size = '10', $allowMultiple = false, $option = array()) {
+    public function listBox(string $name, array $items, string|int $size = 10,
+                            bool $allowMultiple = false, array $option = array()) {
         $option['size'] = $size;
         $option['multiple'] = $allowMultiple;
         return $this->select($name, $items, $option);
     }
 
     
-    public function button($value = '提交', $type = 'submit', $option = array()) {
+    public function button(string $value = 'Submit', string $type = 'submit', array $option = array()) {
         $option['type'] = $type;
         $option['value'] = $value;
         $this->__attributes['fields'][] = array(

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Zodream\Html;
 /**
  * Created by PhpStorm.
@@ -10,14 +11,14 @@ namespace Zodream\Html;
 use Zodream\Infrastructure\Support\Html;
 
 class ScriptWidget extends Widget {
-    protected function run() {
+    protected function run(): string {
         if (strtolower($this->get('kind')) === 'css') {
             return $this->css();
         }
         return $this->js();
     }
 
-    protected function js() {
+    protected function js(): string {
         if ($this->has('file')) {
             return Html::tag('script' , '', array(
                 'type' => 'text/javascript',
@@ -27,7 +28,7 @@ class ScriptWidget extends Widget {
         return Html::tag('script', $this->get('source'));
     }
 
-    protected function css() {
+    protected function css(): string {
         if ($this->has('file')) {
             return Html::tag('link', '', array(
                 'href' => url()->asset($this->get('file')),

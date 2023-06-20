@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Zodream\Html\Bootstrap;
 /**
  * Created by PhpStorm.
@@ -7,11 +8,10 @@ namespace Zodream\Html\Bootstrap;
  * Time: 18:39
  */
 use Zodream\Html\Widget;
-use Zodream\Infrastructure\Error\Error;
 
 class AccordionWidget extends Widget {
 
-    protected $default = [
+    protected array $default = [
         'data' => [],
         'id' => 'accordion',
         'item' => [
@@ -20,7 +20,7 @@ class AccordionWidget extends Widget {
         ] // \Closure
     ];
 
-    protected function run() {
+    protected function run(): string {
         $tags = $this->get('item');
         $data = $this->get('data');
         $content = null;
@@ -45,7 +45,7 @@ class AccordionWidget extends Widget {
         ]);
     }
 
-    public function item($title, $content, $index = 0) {
+    public function item(string $title, string $content, string|int $index = 0): string {
         return <<<HTML
 <div class="panel panel-default">
 <div class="panel-heading" role="tab" id="heading{$index}">

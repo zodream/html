@@ -12,9 +12,9 @@ class Form {
     /**
      * @var Model
      */
-    protected static $model;
+    protected static mixed $model = null;
 
-    public static function getModelValue(string $name) {
+    public static function getModelValue(string $name): mixed {
         if (!(static::$model instanceof Model)) {
             return null;
         }
@@ -30,12 +30,12 @@ class Form {
         return Arr::getChildByArray($args, is_array($val) ? $val : Json::decode($val));
     }
 
-    public static function getModelLabel(string $name) {
+    public static function getModelLabel(string $name): ?string {
         return static::$model instanceof Model ?
             static::$model->getLabel($name) : Str::studly($name);
     }
 
-    public static function open($model, $uri = null, array $option = []) {
+    public static function open($model, $uri = null, array $option = []): string {
         if (!$model instanceof Model && is_string($model)) {
             list($uri, $model) = [$model, null];
         }
@@ -53,7 +53,7 @@ class Form {
      * @param string $placeholder
      * @return Input
      */
-    public static function text(string $name, bool $required = false, string $placeholder = '') {
+    public static function text(string $name, bool $required = false, string $placeholder = ''): Input {
         return Theme::text(static::formatName($name), static::getModelValue($name), static::getModelLabel($name), $placeholder, $required);
     }
 
@@ -63,9 +63,10 @@ class Form {
      * @param string $placeholder
      * @param string $label
      * @param bool $toggle 是否显示
-     * @return null|string
+     * @return Input|null
      */
-    public static function password(string $name, bool $required = false, string $placeholder = '', string $label = '', bool $toggle = true) {
+    public static function password(string $name, bool $required = false, string $placeholder = '',
+                                    string $label = '', bool $toggle = true) : ?Input {
         if (!$toggle) {
             return null;
         }
@@ -78,34 +79,35 @@ class Form {
      * @param string $placeholder
      * @return Input
      */
-    public static function email(string $name, bool $required = false, string $placeholder = '') {
+    public static function email(string $name, bool $required = false, string $placeholder = ''): Input {
         return Theme::email(static::formatName($name), static::getModelValue($name), static::getModelLabel($name), $placeholder, $required);
     }
 
     /**
-     * @param $name
-     * @param $data
+     * @param string $name
+     * @param array $data
      * @return Input
      */
-    public static function radio(string $name, $data) {
+    public static function radio(string $name, array $data = []): Input {
         return Theme::radio(static::formatName($name), $data, static::getModelValue($name), static::getModelLabel($name));
     }
+
     /**
-     * @param $name
-     * @param $data
+     * @param string $name
+     * @param null $data
      * @return Input
      */
-    public static function checkbox(string $name, $data = null) {
+    public static function checkbox(string $name, array $data = null): Input {
         return Theme::checkbox(static::formatName($name), $data, static::getModelValue($name), static::getModelLabel($name));
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @param array $data
      * @param bool $required
      * @return Input
      */
-    public static function select(string $name, array $data, bool $required = false) {
+    public static function select(string $name, array $data, bool $required = false): Input {
         return Theme::select(static::formatName($name), $data, static::getModelValue($name), static::getModelLabel($name), $required);
     }
 
@@ -115,30 +117,30 @@ class Form {
      * @param string $placeholder
      * @return Input
      */
-    public static function file(string $name, bool $required = false, string $placeholder = '') {
+    public static function file(string $name, bool $required = false, string $placeholder = ''): Input {
         return Theme::file(static::formatName($name), static::getModelValue($name), static::getModelLabel($name), $placeholder, $required);
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @param bool $required
-     * @param null $placeholder
+     * @param string $placeholder
      * @return Input
      */
-    public static function textarea(string $name, bool $required = false, string $placeholder = '') {
+    public static function textarea(string $name, bool $required = false, string $placeholder = ''): Input {
         return Theme::textarea(static::formatName($name), static::getModelValue($name), static::getModelLabel($name), $placeholder, $required);
     }
 
-    public static function switch(string $name) {
+    public static function switch(string $name): Input {
         return Theme::switch(static::formatName($name), intval(static::getModelValue($name)), static::getModelLabel($name));
     }
 
 
     /**
      * @param string $pk 是否隐藏输出主键
-     * @return string|static
+     * @return string
      */
-    public static function close(string $pk = '') {
+    public static function close(string $pk = ''): string {
         $html = '';
         if (!empty($pk) && !empty(static::$model)) {
             $html = BaseForm::hidden($pk, static::getModelValue($pk));

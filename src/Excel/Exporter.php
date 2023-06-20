@@ -18,9 +18,9 @@ class Exporter implements ExportObject {
     protected string $type = 'Xlsx';
 
     public function __construct(
-        protected $title = '',
-        protected $header = [],
-        protected $data = []) {
+        protected string $title = '',
+        protected array $header = [],
+        protected array|IteratorAggregate $data = []) {
     }
 
     /**

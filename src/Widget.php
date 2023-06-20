@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Zodream\Html;
 /**
  * 视图组件基类
@@ -13,9 +14,9 @@ use Zodream\Helpers\Json;
 use Zodream\Helpers\Time;
 
 abstract class Widget extends MagicObject {
-    protected $default = array();
+    protected array $default = array();
     
-    abstract protected function run();
+    abstract protected function run(): string;
     
     public function __construct() {
         $this->set($this->default);
@@ -27,7 +28,7 @@ abstract class Widget extends MagicObject {
      * @return string
      * @throws \Exception
      */
-    public static function show($config = array()) {
+    public static function show(array $config = array()): string {
         ob_start();
         ob_implicit_flush(false);
         try {
@@ -44,15 +45,15 @@ abstract class Widget extends MagicObject {
         return ob_get_clean() . $out;
     }
     
-    protected function json(array $args = array()) {
+    protected function json(array $args = array()): string {
         return Json::encode($args);
     }
     
-    public function __toString() {
+    public function __toString(): string {
         return $this->show();
     }
 
-    protected function format(array $data, $tag = null) {
+    protected function format(array $data, mixed $tag = null): string {
         if ($tag instanceof \Closure) {
             return call_user_func_array($tag, $data);
         }
@@ -63,7 +64,7 @@ abstract class Widget extends MagicObject {
         return implode(' ', $result);
     }
 
-    protected function formatOne($data, $tag = null) {
+    protected function formatOne(mixed $data, string|array $tag = ''): mixed {
         if (empty($tag)) {
             return $data;
         }
