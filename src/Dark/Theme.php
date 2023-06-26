@@ -90,7 +90,7 @@ class Theme {
         return Input::radio($name, $selected)->label($label)->items($data);
     }
 
-    public static function checkbox(string $name, ?array $data, mixed $selected = null, string $label = ''): Input {
+    public static function checkbox(string $name, array|string|null $data, mixed $selected = null, string $label = ''): Input {
         return Input::checkbox($name, $selected)->label($label)->items($data);
     }
 
