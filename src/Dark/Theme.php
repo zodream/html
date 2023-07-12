@@ -21,8 +21,8 @@ class Theme {
     }
 
     public static function menuItem(?string $label, mixed $url = 'javascript:;',
-                                    string $icon = '',
-                                    array $children = [],
+                                    ?string $icon = '',
+                                    ?array $children = [],
                                     bool $expand = false,
                                     bool $active = false,
                                     bool $toggle = true, array $options = []): string {
