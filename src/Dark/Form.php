@@ -18,7 +18,7 @@ class Form {
         if (!(static::$model instanceof Model)) {
             return null;
         }
-        if (strpos($name, '.') <= 0) {
+        if (!str_contains($name, '.')) {
             return static::$model->getAttributeSource($name);
         }
         $args = explode('.', $name);
@@ -27,7 +27,13 @@ class Form {
         if (empty($val)) {
             return null;
         }
-        return Arr::getChildByArray($args, is_array($val) ? $val : Json::decode($val));
+        if (!is_array($val)) {
+            $val = Json::decode($val);
+        }
+        if (empty($val)) {
+            return null;
+        }
+        return Arr::getChildByArray($args, $val);
     }
 
     public static function getModelLabel(string $name): ?string {
