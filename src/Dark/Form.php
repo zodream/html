@@ -57,9 +57,9 @@ class Form {
      * @param string $name
      * @param bool $required
      * @param string $placeholder
-     * @return Input
+     * @return FormInput
      */
-    public static function text(string $name, bool $required = false, string $placeholder = ''): Input {
+    public static function text(string $name, bool $required = false, string $placeholder = ''): FormInput {
         return Theme::text(static::formatName($name), static::getModelValue($name), static::getModelLabel($name), $placeholder, $required);
     }
 
@@ -69,10 +69,10 @@ class Form {
      * @param string $placeholder
      * @param string $label
      * @param bool $toggle 是否显示
-     * @return Input|null
+     * @return FormInput|null
      */
     public static function password(string $name, bool $required = false, string $placeholder = '',
-                                    string $label = '', bool $toggle = true) : ?Input {
+                                    string $label = '', bool $toggle = true) : ?FormInput {
         if (!$toggle) {
             return null;
         }
@@ -83,27 +83,27 @@ class Form {
      * @param string $name
      * @param bool $required
      * @param string $placeholder
-     * @return Input
+     * @return FormInput
      */
-    public static function email(string $name, bool $required = false, string $placeholder = ''): Input {
+    public static function email(string $name, bool $required = false, string $placeholder = ''): FormInput {
         return Theme::email(static::formatName($name), static::getModelValue($name), static::getModelLabel($name), $placeholder, $required);
     }
 
     /**
      * @param string $name
      * @param array $data
-     * @return Input
+     * @return FormInput
      */
-    public static function radio(string $name, array $data = []): Input {
+    public static function radio(string $name, array $data = []): FormInput {
         return Theme::radio(static::formatName($name), $data, static::getModelValue($name), static::getModelLabel($name));
     }
 
     /**
      * @param string $name
      * @param null $data
-     * @return Input
+     * @return FormInput
      */
-    public static function checkbox(string $name, array $data = null): Input {
+    public static function checkbox(string $name, array $data = null): FormInput {
         return Theme::checkbox(static::formatName($name), $data, static::getModelValue($name), static::getModelLabel($name));
     }
 
@@ -111,9 +111,9 @@ class Form {
      * @param string $name
      * @param array $data
      * @param bool $required
-     * @return Input
+     * @return FormInput
      */
-    public static function select(string $name, array $data, bool $required = false): Input {
+    public static function select(string $name, array $data, bool $required = false): FormInput {
         return Theme::select(static::formatName($name), $data, static::getModelValue($name), static::getModelLabel($name), $required);
     }
 
@@ -121,9 +121,9 @@ class Form {
      * @param string $name
      * @param bool $required
      * @param string $placeholder
-     * @return Input
+     * @return FormInput
      */
-    public static function file(string $name, bool $required = false, string $placeholder = ''): Input {
+    public static function file(string $name, bool $required = false, string $placeholder = ''): FormInput {
         return Theme::file(static::formatName($name), static::getModelValue($name), static::getModelLabel($name), $placeholder, $required);
     }
 
@@ -131,13 +131,13 @@ class Form {
      * @param string $name
      * @param bool $required
      * @param string $placeholder
-     * @return Input
+     * @return FormInput
      */
-    public static function textarea(string $name, bool $required = false, string $placeholder = ''): Input {
+    public static function textarea(string $name, bool $required = false, string $placeholder = ''): FormInput {
         return Theme::textarea(static::formatName($name), static::getModelValue($name), static::getModelLabel($name), $placeholder, $required);
     }
 
-    public static function switch(string $name): Input {
+    public static function switch(string $name): FormInput {
         return Theme::switch(static::formatName($name), intval(static::getModelValue($name)), static::getModelLabel($name));
     }
 

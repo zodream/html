@@ -3,32 +3,33 @@ declare(strict_types=1);
 namespace Zodream\Html\Dark;
 
 use Zodream\Helpers\Str;
+use Zodream\Html\Input;
 use Zodream\Infrastructure\Support\Html;
 use Zodream\Html\Form as BaseForm;
 
 /**
  * Class Input
  * @package Zodream\Html\Dark
- * @method Input type($type, $name, $value)
- * @method Input text($name, $value)
- * @method Input url($name, $value)
- * @method Input email($name, $value)
- * @method Input password($name)
- * @method Input textarea($name, $value)
- * @method Input file($name, $value)
- * @method Input switch($name, $value)
- * @method Input id($id)
- * @method Input name($name)
- * @method Input value($value)
- * @method Input label($label)
- * @method Input items($items)
- * @method Input tip($tip)
- * @method Input options($options)
- * @method Input placeholder($placeholder)
- * @method Input required($required)
- * @method Input class($class)
+ * @method FormInput type($type, $name, $value)
+ * @method FormInput text($name, $value)
+ * @method FormInput url($name, $value)
+ * @method FormInput email($name, $value)
+ * @method FormInput password($name)
+ * @method FormInput textarea($name, $value)
+ * @method FormInput file($name, $value)
+ * @method FormInput switch($name, $value)
+ * @method FormInput id($id)
+ * @method FormInput name($name)
+ * @method FormInput value($value)
+ * @method FormInput label($label)
+ * @method FormInput items($items)
+ * @method FormInput tip($tip)
+ * @method FormInput options($options)
+ * @method FormInput placeholder($placeholder)
+ * @method FormInput required($required)
+ * @method FormInput class($class)
  */
-class Input {
+class FormInput {
     protected string $id = '';
 
     protected string $label = '';
@@ -66,7 +67,7 @@ class Input {
 
     /**
      * @param mixed $label
-     * @return Input
+     * @return static
      * @throws \Exception
      */
     public function setLabel(string $label) {
@@ -79,7 +80,7 @@ class Input {
 
     /**
      * @param mixed $boxClass
-     * @return Input
+     * @return static
      */
     public function setBoxClass(string $boxClass) {
         $this->boxClass = $boxClass;
@@ -88,7 +89,7 @@ class Input {
 
     /**
      * @param mixed $items
-     * @return Input
+     * @return static
      */
     public function setItems(mixed $items){
         if (!is_array($items)) {
@@ -96,7 +97,7 @@ class Input {
             return $this;
         }
         if (isset($items[0]) && !is_numeric($items[0]) && !is_string($items[0])) {
-            $items = self::getColumnsSource(...$items);
+            $items = Input::getColumnsSource(...$items);
         }
         $this->items = $items;
         return $this;
@@ -104,9 +105,9 @@ class Input {
 
     /**
      * @param mixed $type
-     * @param null $name
+     * @param string|null $name
      * @param null $value
-     * @return Input
+     * @return static
      */
     public function setType(string $type, ?string $name = null, mixed $value = null) {
         $this->type = $type;
@@ -230,8 +231,13 @@ HTML;
         unset($options['allow']);
         $html = <<<HTML
 <button type="button" data-type="upload"{$allow}>{$upload}</button>
+
+HTML;
+        if (str_contains($allow, 'image/')) {
+            $html .= <<<HTML
 <button type="button" data-type="preview">{$preview}</button>
 HTML;
+        }
         if (isset($options['dialog'])) {
             $options['dialog'] = $options['dialog'] === 'multiple' ? 'multiple' : 'single';
             $online =  __('Online');
@@ -255,8 +261,12 @@ HTML;
     }
 
 
-    public function __call(string $name, array $arguments): Input {
-        if (in_array($name, ['text', 'email', 'url', 'password', 'file', 'radio', 'checkbox', 'select', 'textarea', 'switch'])) {
+    public function __call(string $name, array $arguments): static {
+        if (in_array($name, ['text', 'email', 'url', 'password',
+            'file',
+            'tel',
+            'image',
+            'radio', 'checkbox', 'select', 'textarea', 'switch'])) {
             return $this->setType($name, ...$arguments);
         }
         $method = 'set'.Str::studly($name);
@@ -278,36 +288,9 @@ HTML;
         return $this;
     }
 
-    public static function __callStatic(string $name, array $arguments): Input {
+    public static function __callStatic(string $name, array $arguments): static {
         return (new static())->$name(...$arguments);
     }
 
-    /**
-     * 转化为键值对数组
-     * @param array $data
-     * @param string|array $value
-     * @param string|array $key
-     * @param array $prepend
-     * @return array|mixed
-     */
-    protected static function getColumnsSource(array $data, string|array $value = 'name',
-                                               string|array $key = 'id', array $prepend = []): mixed {
-        if (is_array($value)) {
-            list($prepend, $value, $key) = [$value, 'name', 'id'];
-        } elseif (is_array($key)) {
-            list($prepend, $key) = [$key, 'id'];
-        }
-        if (empty($data)) {
-            return $prepend;
-        }
-        foreach ($data as $item) {
-            // 支持值作为键值
-            if (is_numeric($item) || is_string($item)) {
-                $prepend[$item] = $item;
-                continue;
-            }
-            $prepend[$item[$key]] = $item[$value];
-        }
-        return $prepend;
-    }
+
 }
