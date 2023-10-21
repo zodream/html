@@ -3,8 +3,8 @@ declare(strict_types=1);
 namespace Zodream\Html\Dark;
 
 use Zodream\Helpers\Arr;
-use Zodream\Helpers\Str;
-use Zodream\Html\Form;
+use Zodream\Html\Input;
+use Zodream\Html\InputHelper;
 use Zodream\Infrastructure\Support\Html;
 
 class Theme {
@@ -72,47 +72,53 @@ class Theme {
 
 
     public static function text(string $name, mixed $value = '', string $label = '',
-                                string $placeholder = '', bool $required = false): FormInput {
-        return FormInput::text($name, $value)->label($label)->placeholder($placeholder)->required($required);
+                                string $placeholder = '', bool $required = false): Input {
+        return Input::text($name, $label, $required)->value($value)->placeholder($placeholder);
     }
 
     public static function email(string $name, mixed $value = '', string $label = '',
-                                 string $placeholder = '', bool $required = false): FormInput {
-        return FormInput::email($name, $value)->label($label)->placeholder($placeholder)->required($required);
+                                 string $placeholder = '', bool $required = false): Input {
+        return Input::email($name, $label, $required)->value($value)->placeholder($placeholder);
     }
 
     public static function password(string $name, string $label = '',
-                                    string $placeholder = '', bool $required = false): FormInput {
-        return FormInput::password($name)->label($label)->placeholder($placeholder)->required($required);
+                                    string $placeholder = '', bool $required = false): Input {
+        return Input::password($name, $label, $required)->placeholder($placeholder);
     }
 
-    public static function radio(string $name, array $data, mixed $selected = null, string $label = ''): FormInput {
-        return FormInput::radio($name, $selected)->label($label)->items($data);
+    public static function radio(string $name, array $data, mixed $selected = null, string $label = ''): Input {
+        return Input::radio($name, $label, InputHelper::formatItems($data))->value($selected);
     }
 
-    public static function checkbox(string $name, array|string|null $data, mixed $selected = null, string $label = ''): FormInput {
-        return FormInput::checkbox($name, $selected)->label($label)->items($data);
+    public static function checkbox(string $name, array|string|null $data, mixed $selected = null,
+                                    string $label = ''): Input {
+        if (!is_array($data)) {
+            return static::switch($name, $selected, $label);
+        }
+        return Input::checkbox($name, $label, InputHelper::formatItems($data))->value($selected);
     }
 
-    public static function switch(string $name, mixed $value = 0, string $label = ''): FormInput {
-        return FormInput::switch($name, $value)->label($label);
+    public static function switch(string $name, mixed $value = 0, string $label = ''): Input {
+        return Input::switch($name, $label)->value($value);
     }
 
     public static function select(string $name, array $data,
-                                  null|int|string $selected = null, string $label = '', bool $required = false): FormInput {
-        return FormInput::select($name, $selected)->label($label)->items($data)->required($required);
+                                  null|int|string $selected = null, string $label = '',
+                                  bool $required = false): Input {
+        return Input::select($name, $label, InputHelper::formatItems($data), $required)->value($selected);
     }
 
 
 
     public static function file(string $name, mixed $value = '', string $label = '',
-                                string $placeholder = '', bool $required = false): FormInput {
-        return FormInput::file($name, $value)->label($label)->placeholder($placeholder)->required($required);
+                                string $placeholder = '', bool $required = false): Input {
+        return Input::file($name, $label, $required)->value($value)->placeholder($placeholder);
     }
 
     public static function textarea(string $name, mixed $value = '', string $label = '',
-                                    string $placeholder = '', bool $required = false): FormInput {
-        return FormInput::textarea($name, $value)->label($label)->placeholder($placeholder)->required($required);
+                                    string $placeholder = '', bool $required = false): Input {
+        return Input::textarea($name, $label, $required)->value($value)
+            ->placeholder($placeholder);
     }
 
 }

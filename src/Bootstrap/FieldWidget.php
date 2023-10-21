@@ -170,7 +170,7 @@ class FieldWidget extends Widget {
 
 
 
-    protected function replace(array $inputTemplate): string {
+    protected function replace(string $inputTemplate): string {
         $input = str_replace(array(
             '{name}',
             '{value}'

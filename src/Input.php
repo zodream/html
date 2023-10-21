@@ -4,6 +4,7 @@ namespace Zodream\Html;
 
 use Zodream\Helpers\Json;
 use Zodream\Helpers\Str;
+use Zodream\Html\Dark\DarkRenderer;
 use Zodream\Infrastructure\Contracts\ArrayAble;
 use Zodream\Infrastructure\Contracts\JsonAble;
 /**
@@ -37,7 +38,8 @@ class Input implements ArrayAble, JsonAble, \Stringable {
         'tel',
         'image',
         'radio',
-        'checkbox', 'select', 'textarea', 'switch', 'html',
+        'checkbox',
+        'select', 'textarea', 'switch', 'html',
         'markdown'
     ];
     const PROPERTY_ITEMS = ['id', 'class', 'type', 'label', 'name', 'tip', 'items', 'value',
@@ -80,34 +82,10 @@ class Input implements ArrayAble, JsonAble, \Stringable {
         return Json::encode($this->toArray(), $options);
     }
 
-    protected function encodeTip(): string {
-        if (empty($this->tip)) {
-            return '';
-        }
-        return '<div class="input-tip">'.$this->tip.'</div>';
-    }
-
-    protected function encodeInput(string $type): string {
-        $method = 'encode'.Str::studly($type);
-        if (method_exists($this, $method)) {
-            return $this->$method();
-        }
-        return Form::input($type, $this->data['name'], $this->data['value'] ?? null, array_merge([
-            'class' => 'form-control'
-        ], $this->data));
-    }
 
     public function __toString(): string {
-        $input = $this->encodeInput($this->data['type']);
-        $tip = $this->encodeTip();
-        return <<<HTML
-<div class="input-group">
-    <label for="{$this->data['id']}">{$this->data['label']}</label>
-    <div class="{$this->data['class']}">
-        {$input}{$tip}
-    </div>
-</div>
-HTML;
+        app()->singletonIf(IHtmlRenderer::class, DarkRenderer::class);
+        return app(IHtmlRenderer::class)->renderInput($this);
     }
 
     public function __set(string $name, $value): void {
@@ -149,6 +127,16 @@ HTML;
 
 
     public static function text(string $name, string $label, bool $required = false): static {
+        $type = __FUNCTION__;
+        return new static(compact('type', 'name', 'label', 'required'));
+    }
+
+    public static function password(string $name, string $label, bool $required = false): static {
+        $type = __FUNCTION__;
+        return new static(compact('type', 'name', 'label', 'required'));
+    }
+
+    public static function url(string $name, string $label, bool $required = false): static {
         $type = __FUNCTION__;
         return new static(compact('type', 'name', 'label', 'required'));
     }
@@ -221,35 +209,5 @@ HTML;
     public static function select(string $name, string $label, array $items, bool $required = false): static {
         $type = __FUNCTION__;
         return new static(compact('type', 'name', 'label', 'items', 'required'));
-    }
-
-
-    /**
-     * 转化为键值对数组
-     * @param array $data
-     * @param string|array $value
-     * @param string|array $key
-     * @param array $prepend
-     * @return array|mixed
-     */
-    public static function getColumnsSource(array $data, string|array $value = 'name',
-                                               string|array $key = 'id', array $prepend = []): mixed {
-        if (is_array($value)) {
-            list($prepend, $value, $key) = [$value, 'name', 'id'];
-        } elseif (is_array($key)) {
-            list($prepend, $key) = [$key, 'id'];
-        }
-        if (empty($data)) {
-            return $prepend;
-        }
-        foreach ($data as $item) {
-            // 支持值作为键值
-            if (is_numeric($item) || is_string($item)) {
-                $prepend[$item] = $item;
-                continue;
-            }
-            $prepend[$item[$key]] = $item[$value];
-        }
-        return $prepend;
     }
 }
