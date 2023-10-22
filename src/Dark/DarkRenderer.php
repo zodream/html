@@ -39,7 +39,7 @@ class DarkRenderer implements IHtmlRenderer {
             return $this->$method($data);
         }
         return $this->renderInputRow(
-            BaseForm::input($data['type'], $data['name'], $options['value'] ?? '', $data),
+            BaseForm::input($data['type'], $data['name'], $data['value'] ?? '', $data),
             $data);
     }
 
@@ -85,6 +85,9 @@ HTML,
         $value = $options['value'] ?? '';
         if (empty($options['items'])) {
             $options['items'] = [];
+        }
+        if (!isset($options['items'][$value])) {
+            $value = key($options['items']);
         }
         foreach ($options['items'] as $key => $item) {
             $checked = $key == $value ? 'checked' : null;
