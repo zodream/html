@@ -64,7 +64,7 @@ abstract class Widget extends MagicObject {
         return implode(' ', $result);
     }
 
-    protected function formatOne(mixed $data, string|array $tag = ''): mixed {
+    protected function formatOne(mixed $data, string|array|null $tag = ''): mixed {
         if (empty($tag)) {
             return $data;
         }
