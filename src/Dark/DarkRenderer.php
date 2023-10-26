@@ -162,12 +162,12 @@ HTML;
         $allow = !empty($options['allow']) ? sprintf(' data-allow="%s"', $options['allow']) : '';
         unset($options['allow']);
         $html = <<<HTML
-<button type="button" data-type="upload"{$allow}>{$upload}</button>
+<button type="button" class="btn btn-default" data-type="upload"{$allow}>{$upload}</button>
 
 HTML;
         if (str_contains($allow, 'image/')) {
             $html .= <<<HTML
-<button type="button" data-type="preview">{$preview}</button>
+<button type="button" class="btn btn-info"  data-type="preview">{$preview}</button>
 HTML;
         }
         if (isset($options['dialog'])) {
@@ -175,7 +175,7 @@ HTML;
             $online =  __('Online');
             $html .= <<<HTML
 
-<button type="button" data-type="images" data-mode="{$options['dialog']}">{$online}</button>
+<button type="button" class="btn btn-success" data-type="images" data-mode="{$options['dialog']}">{$online}</button>
 HTML;
         }
         return $this->renderInputRow(
@@ -188,6 +188,6 @@ HTML;
         if (empty($data['tip'])) {
             return '';
         }
-        return '<div class="input-tip">'.$data['tip'].'</div>';
+        return '<div class="tooltip">'.$data['tip'].'</div>';
     }
 }
