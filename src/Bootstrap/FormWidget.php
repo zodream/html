@@ -7,8 +7,8 @@ namespace Zodream\Html\Bootstrap;
  * Date: 2016/4/30
  * Time: 9:57
  */
-use Zodream\Html\VerifyCsrfToken;
 use Zodream\Html\Widget;
+use Zodream\Service\Middleware\CSRFMiddleware;
 
 
 class FormWidget extends Widget {
@@ -68,8 +68,8 @@ class FormWidget extends Widget {
     }
     
     public function csrf() {
-        return $this->hidden('csrf', array(
-            'value' => VerifyCsrfToken::get()
+        return $this->hidden(CSRFMiddleware::FORM_KEY, array(
+            'value' => session()->token()
         ));
     }
 
@@ -167,7 +167,7 @@ class FormWidget extends Widget {
     /**
      * 列表框
      * @param string $name 名称
-     * @param $items 列表项
+     * @param array $items 列表项
      * @param string $size 显示个数
      * @param bool $allowMultiple 是否允许多选
      * @param array $option
@@ -200,11 +200,11 @@ class FormWidget extends Widget {
         return $this->show($this->get());
     }
 
-    public function __toString() {
+    public function __toString(): string {
         return $this->show($this->get());
     }
 
     public function __call($name, $arguments) {
-        return $this->input($arguments[0], $name, isset($arguments[1]) ? $arguments[1] : array());
+        return $this->input($arguments[0], $name, $arguments[1] ?? array());
     }
 }

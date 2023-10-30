@@ -4,6 +4,7 @@ namespace Zodream\Html;
 
 use Zodream\Helpers\Arr;
 use Zodream\Infrastructure\Support\Html;
+use Zodream\Service\Middleware\CSRFMiddleware;
 
 class Form {
 
@@ -31,8 +32,7 @@ class Form {
     }
 
     public static function token(): string {
-        $token = VerifyCsrfToken::get();
-        return self::hidden('_token', $token);
+        return self::hidden(CSRFMiddleware::FORM_KEY, session()->token());
     }
 
     public static function close(): string {

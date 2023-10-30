@@ -188,6 +188,6 @@ HTML;
         if (empty($data['tip'])) {
             return '';
         }
-        return '<div class="tooltip">'.$data['tip'].'</div>';
+        return sprintf('<div class="tooltip">%s</div>', \Zodream\Helpers\Html::fromText($data['tip'], false));
     }
 }
