@@ -70,6 +70,31 @@ class Theme {
         ];
     }
 
+    /**
+     * 显示页面提示
+     * @param string $content
+     * @param string $header
+     * @return string
+     */
+    public static function tooltip(string $content, string $header = ''): string {
+        if ($header === '') {
+            $header = __('Operating tips');
+        }
+        $html = '';
+        foreach (explode("\n", $content) as $item) {
+            $item = trim($item);
+            if ($item === '') {
+                continue;
+            }
+            $html .= sprintf('<li>%s</li>', $item);
+        }
+        if (empty($html)) {
+            return '';
+        }
+        return <<<HTML
+<div class="page-tooltip-bar"><p class="tooltip-header">{$header}</p><ul>{$html}</ul><span class="tooltip-toggle"></span></div>
+HTML;
+    }
 
     public static function text(string $name, mixed $value = '', string $label = '',
                                 string $placeholder = '', bool $required = false): Input {
