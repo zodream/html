@@ -28,7 +28,7 @@ abstract class Widget extends MagicObject {
      * @return string
      * @throws \Exception
      */
-    public static function show(array $config = array()): string {
+    public static function show(array $config = []): string {
         ob_start();
         ob_implicit_flush(false);
         try {
