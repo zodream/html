@@ -5,6 +5,7 @@ namespace Zodream\Html\Dark;
 use Zodream\Helpers\Arr;
 use Zodream\Html\Input;
 use Zodream\Html\InputHelper;
+use Zodream\Html\Page;
 use Zodream\Infrastructure\Support\Html;
 
 class Theme {
@@ -94,6 +95,32 @@ class Theme {
         return <<<HTML
 <div class="page-tooltip-bar"><p class="tooltip-header">{$header}</p><ul>{$html}</ul><span class="tooltip-toggle"></span></div>
 HTML;
+    }
+
+    /**
+     * 空页面提示
+     * @param mixed $toggle
+     * @return string
+     * @throws \Exception
+     */
+    public static function emptyTooltip(mixed $toggle): string {
+        $isPage = $toggle instanceof Page;
+        if (($isPage && !$toggle->isEmpty()) || (!$isPage && !empty($toggle))) {
+            return '';
+        }
+        return sprintf('<div class="page-empty-tip">%s</div>', __('Nothing is here.'));
+    }
+
+    /**
+     * 生成树状结构树
+     * @param mixed $level
+     * @return string
+     */
+    public static function treeLevel(mixed $level): string {
+        if (empty($level) || $level < 1) {
+            return '';
+        }
+        return sprintf('<span>ￂ%s</span>', str_repeat('ｰ', intval($level) - 1));
     }
 
     public static function text(string $name, mixed $value = '', string $label = '',

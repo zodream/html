@@ -20,12 +20,15 @@ class DarkRenderer implements IHtmlRenderer {
         if ($data instanceof ArrayAble) {
             $data = $data->toArray();
         }
+        $data['type'] = $data['type'] ?? 'text';
+        if ($data['type'] === 'group') {
+            return implode('', array_map([$this, __FUNCTION__], $data['items'] ?? []));
+        }
         if (empty($data['id'])) {
             $data['id'] = str_replace(['[', ']', '#', '.'], ['_', '', '', ''],
                 sprintf('%s_%s', $data['name'], Str::quickRandom(3)));
         }
         $data['class'] = sprintf('form-control %s', $data['class'] ?? '');
-        $data['type'] = $data['type'] ?? 'text';
         if (empty($data['placeholder'])) {
             $data['placeholder'] = sprintf('%s %s', __('Please input'), strip_tags($data['label']));
         }

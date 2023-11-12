@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace Zodream\Html;
 
+use Zodream\Helpers\Arr;
 use Zodream\Helpers\Json;
 use Zodream\Helpers\Str;
 use Zodream\Html\Dark\DarkRenderer;
@@ -63,6 +64,11 @@ class Input implements ArrayAble, JsonAble, \Stringable {
         return $this;
     }
 
+    public function attr(string $key, mixed $value): static {
+        $this->option[$key] = $value;
+        return $this;
+    }
+
     /**
      * 转化请求的值
      * @param mixed $value
@@ -73,7 +79,7 @@ class Input implements ArrayAble, JsonAble, \Stringable {
     }
 
     public function toArray(): array {
-        return array_merge($this->data, [
+        return array_merge(Arr::toArray($this->data), [
             'option' => $this->option
         ]);
     }
@@ -209,5 +215,10 @@ class Input implements ArrayAble, JsonAble, \Stringable {
     public static function select(string $name, string $label, array $items, bool $required = false): static {
         $type = __FUNCTION__;
         return new static(compact('type', 'name', 'label', 'items', 'required'));
+    }
+
+    public static function group(string $label, array $items): static {
+        $type = __FUNCTION__;
+        return new static(compact('type', 'label', 'items'));
     }
 }
