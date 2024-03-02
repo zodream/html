@@ -221,4 +221,23 @@ class Input implements ArrayAble, JsonAble, \Stringable {
         $type = __FUNCTION__;
         return new static(compact('type', 'label', 'items'));
     }
+
+    public static function optionItem(string $name, mixed $value): array {
+        return compact('name', 'value');
+    }
+
+    public static function optionItems(...$items): array {
+        if (func_num_args() === 1 && (is_array($items[0]) || is_object($items[0]))) {
+            $items = $items[0];
+        }
+        $data = [];
+        foreach ($items as $i => $item) {
+            if (is_string($item) || is_numeric($item)) {
+                $data[] = static::optionItem((string)$item, $i);
+                continue;
+            }
+            $data[] = $item;
+        }
+        return $data;
+    }
 }

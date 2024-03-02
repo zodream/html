@@ -65,7 +65,7 @@ class PageLink extends Widget {
 	 * @return string
 	 */
 	public function getHtml(): string {
-	   if ($this->getPageTotal() < 2) {
+	   if ($this->getPageTotal() < 2 && $this->get('page') == 1) {
 	       return '';
        }
        return str_ireplace(array(
@@ -170,7 +170,9 @@ class PageLink extends Widget {
 		if ($this->get('page') < $this->pageTotal - $lastList && $length < $this->pageTotal - 1) {
 			$linkPage .= $this->getOmit();
 		}
-		$linkPage .= $this->replaceLine($this->pageTotal);
+		if ($this->pageTotal > 1) {
+            $linkPage .= $this->replaceLine($this->pageTotal);
+        }
 		return $linkPage;
 	}
 
