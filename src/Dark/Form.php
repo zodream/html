@@ -105,7 +105,7 @@ class Form {
      * @return Input
      */
     public static function checkbox(string $name, array $data = null): Input {
-        return Theme::checkbox(static::formatName($name), $data, static::getModelValue($name), static::getModelLabel($name));
+        return Theme::checkbox(static::formatName($name).'[]', $data, static::getModelValue($name), static::getModelLabel($name));
     }
 
     /**
