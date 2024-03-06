@@ -20,7 +20,7 @@ class Exporter implements ExportObject {
     public function __construct(
         protected string $title = '',
         protected array $header = [],
-        protected array|IteratorAggregate $data = []) {
+        protected array|IteratorAggregate|SqlBuilder $data = []) {
     }
 
     /**
