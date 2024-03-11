@@ -31,6 +31,8 @@ use Zodream\Infrastructure\Contracts\JsonAble;
 class Input implements ArrayAble, JsonAble, \Stringable {
 
     const TYPE_ITEMS = ['text',
+        'date',
+        'datetime',
         'numeric',
         'email',
         'url',
@@ -137,6 +139,16 @@ class Input implements ArrayAble, JsonAble, \Stringable {
         return new static(compact('type', 'name', 'label', 'required'));
     }
 
+    public static function date(string $name, string $label, bool $required = false): static {
+        $type = __FUNCTION__;
+        return new static(compact('type', 'name', 'label', 'required'));
+    }
+
+    public static function datetime(string $name, string $label, bool $required = false): static {
+        $type = __FUNCTION__;
+        return new static(compact('type', 'name', 'label', 'required'));
+    }
+
     public static function password(string $name, string $label, bool $required = false): static {
         $type = __FUNCTION__;
         return new static(compact('type', 'name', 'label', 'required'));
@@ -163,11 +175,6 @@ class Input implements ArrayAble, JsonAble, \Stringable {
     }
 
     public static function textarea(string $name, string $label, bool $required = false): static {
-        $type = __FUNCTION__;
-        return new static(compact('type', 'label','name', 'required'));
-    }
-
-    public static function date(string $name, string $label, bool $required = false): static {
         $type = __FUNCTION__;
         return new static(compact('type', 'label','name', 'required'));
     }

@@ -128,6 +128,16 @@ HTML;
         return Input::text($name, $label, $required)->value($value)->placeholder($placeholder);
     }
 
+    public static function date(string $name, mixed $value = '', string $label = '',
+                                string $placeholder = '', bool $required = false): Input {
+        return Input::date($name, $label, $required)->value($value)->placeholder($placeholder);
+    }
+
+    public static function datetime(string $name, mixed $value = '', string $label = '',
+                                string $placeholder = '', bool $required = false): Input {
+        return Input::datetime($name, $label, $required)->value($value)->placeholder($placeholder);
+    }
+
     public static function email(string $name, mixed $value = '', string $label = '',
                                  string $placeholder = '', bool $required = false): Input {
         return Input::email($name, $label, $required)->value($value)->placeholder($placeholder);

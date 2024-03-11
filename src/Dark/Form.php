@@ -64,6 +64,14 @@ class Form {
         return Theme::text(static::formatName($name), static::getModelValue($name), static::getModelLabel($name), $placeholder, $required);
     }
 
+    public static function date(string $name, bool $required = false, string $placeholder = ''): Input {
+        return Theme::date(static::formatName($name), static::getModelValue($name), static::getModelLabel($name), $placeholder, $required);
+    }
+
+    public static function datetime(string $name, bool $required = false, string $placeholder = ''): Input {
+        return Theme::datetime(static::formatName($name), static::getModelValue($name), static::getModelLabel($name), $placeholder, $required);
+    }
+
     /**
      * @param string $name
      * @param bool $required

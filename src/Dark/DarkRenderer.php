@@ -188,6 +188,18 @@ HTML;
         );
     }
 
+    protected function encodeDatetime(array $options): string {
+        $options['boxClass'] = 'file-input';
+        $btnLabel = __('Select');
+        $html = <<<HTML
+<button type="button" class="btn btn-default" data-type="datetime" data-format="y-m-d h:i:s">{$btnLabel}</button>
+HTML;
+        return $this->renderInputRow(
+            BaseForm::input('text', $options['name'], $options['value'], $options). $html,
+            $options
+        );
+    }
+
     protected function encodeTip(array $data): string {
         if (empty($data['tip'])) {
             return '';
