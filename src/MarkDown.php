@@ -25,7 +25,6 @@ class MarkDown {
 
     public function text(string $text): string {
         $elements = $this->textElements($text);
-
         # convert to markup
         $markup = $this->elements($elements);
 
@@ -182,13 +181,11 @@ class MarkDown {
     # Blocks
     #
 
-    protected function lines(array $lines)
-    {
+    protected function lines(array $lines) {
         return $this->elements($this->linesElements($lines));
     }
 
-    protected function linesElements(array $lines)
-    {
+    protected function linesElements(array $lines) {
         $elements = [];
         $currentBlock = null;
 
@@ -226,21 +223,16 @@ class MarkDown {
 
             # ~
 
-            if (isset($currentBlock['continuable']))
-            {
+            if (isset($currentBlock['continuable'])) {
                 $methodName = 'block' . $currentBlock['type'] . 'Continue';
                 $Block = $this->$methodName($Line, $currentBlock);
 
-                if (isset($Block))
-                {
+                if (isset($Block)) {
                     $currentBlock = $Block;
 
                     continue;
-                }
-                else
-                {
-                    if ($this->isBlockCompletable($currentBlock['type']))
-                    {
+                } else {
+                    if ($this->isBlockCompletable($currentBlock['type'])) {
                         $methodName = 'block' . $currentBlock['type'] . 'Complete';
                         $currentBlock = $this->$methodName($currentBlock);
                     }
@@ -255,10 +247,8 @@ class MarkDown {
 
             $blockTypes = $this->unmarkedBlockTypes;
 
-            if (isset($this->blockTypes[$marker]))
-            {
-                foreach ($this->blockTypes[$marker] as $blockType)
-                {
+            if (isset($this->blockTypes[$marker])) {
+                foreach ($this->blockTypes[$marker] as $blockType) {
                     $blockTypes[] = $blockType;
                 }
             }
@@ -266,26 +256,21 @@ class MarkDown {
             #
             # ~
 
-            foreach ($blockTypes as $blockType)
-            {
+            foreach ($blockTypes as $blockType) {
                 $Block = $this->{"block$blockType"}($Line, $currentBlock);
 
-                if (isset($Block))
-                {
+                if (isset($Block)) {
                     $Block['type'] = $blockType;
 
-                    if ( ! isset($Block['identified']))
-                    {
-                        if (isset($currentBlock))
-                        {
+                    if ( ! isset($Block['identified'])) {
+                        if (isset($currentBlock)) {
                             $elements[] = $this->extractElement($currentBlock);
                         }
 
                         $Block['identified'] = true;
                     }
 
-                    if ($this->isBlockContinuable($blockType))
-                    {
+                    if ($this->isBlockContinuable($blockType)) {
                         $Block['continuable'] = true;
                     }
 
@@ -297,17 +282,13 @@ class MarkDown {
 
             # ~
 
-            if (isset($currentBlock) and $currentBlock['type'] === 'Paragraph')
-            {
+            if (isset($currentBlock) and $currentBlock['type'] === 'Paragraph') {
                 $Block = $this->paragraphContinue($Line, $currentBlock);
             }
 
-            if (isset($Block))
-            {
+            if (isset($Block)) {
                 $currentBlock = $Block;
-            }
-            else
-            {
+            } else {
                 if (isset($currentBlock))
                 {
                     $elements[] = $this->extractElement($currentBlock);
@@ -321,16 +302,14 @@ class MarkDown {
 
         # ~
 
-        if (isset($currentBlock['continuable']) && $this->isBlockCompletable($currentBlock['type']))
-        {
+        if (isset($currentBlock['continuable']) && $this->isBlockCompletable($currentBlock['type'])) {
             $methodName = 'block' . $currentBlock['type'] . 'Complete';
             $currentBlock = $this->$methodName($currentBlock);
         }
 
         # ~
 
-        if (isset($currentBlock))
-        {
+        if (isset($currentBlock)) {
             $elements[] = $this->extractElement($currentBlock);
         }
 
@@ -339,16 +318,12 @@ class MarkDown {
         return $elements;
     }
 
-    protected function extractElement(array $component)
-    {
-        if ( ! isset($component['element']))
-        {
+    protected function extractElement(array $component) {
+        if ( ! isset($component['element'])) {
             if (isset($component['markup']))
             {
                 $component['element'] = array('rawHtml' => $component['markup']);
-            }
-            elseif (isset($component['hidden']))
-            {
+            } elseif (isset($component['hidden'])) {
                 $component['element'] = array();
             }
         }
@@ -357,24 +332,20 @@ class MarkDown {
     }
 
     #[Pure]
-    protected function isBlockContinuable($type)
-    {
+    protected function isBlockContinuable($type) {
         return method_exists($this, 'block' . $type . 'Continue');
     }
 
     #[Pure]
-    protected function isBlockCompletable($type)
-    {
+    protected function isBlockCompletable($type) {
         return method_exists($this, 'block' . $type . 'Complete');
     }
 
     #
     # Code
 
-    protected function blockCode(array $line, $block = null): ?array
-    {
-        if (!empty($block) && $block['type'] === 'Paragraph' && ! isset($block['interrupted']))
-        {
+    protected function blockCode(array $line, $block = null): ?array {
+        if (!empty($block) && $block['type'] === 'Paragraph' && ! isset($block['interrupted'])) {
             return null;
         }
 
@@ -391,7 +362,6 @@ class MarkDown {
                 ),
             ),
         );
-
     }
 
     protected function blockCodeContinue(array $line, $block): ?array
@@ -470,60 +440,81 @@ class MarkDown {
 
         $openerLength = strspn($line['text'], $marker);
 
-        if ($openerLength < 3)
-        {
+        if ($openerLength < 3) {
             return null;
         }
 
         $infoString = trim(substr($line['text'], $openerLength), "\t ");
-
-        if (str_contains($infoString, '`'))
-        {
+        if (str_contains($infoString, '`')) {
             return null;
         }
-
         $element = array(
             'name' => 'code',
             'text' => '',
         );
 
-        if ($infoString !== '') {
-            /**
-             * https://www.w3.org/TR/2011/WD-html5-20110525/elements.html#classes
-             * Every HTML element may have a class attribute specified.
-             * The attribute, if specified, must have a value that is a set
-             * of space-separated tokens representing the various classes
-             * that the element belongs to.
-             * [...]
-             * The space characters, for the purposes of this specification,
-             * are U+0020 SPACE, U+0009 CHARACTER TABULATION (tab),
-             * U+000A LINE FEED (LF), U+000C FORM FEED (FF), and
-             * U+000D CARRIAGE RETURN (CR).
-             */
-            $language = substr($infoString, 0, strcspn($infoString, " \t\n\f\r"));
-
-            $element['attributes'] = array('class' => "language-$language");
+        $info = $this->parseCodeItQuote($infoString);
+        if (!empty($info['language'])) {
+            $element['attributes'] = array('class' => sprintf('language-%s', $info['language']));
         }
-
         return array(
             'char' => $marker,
             'openerLength' => $openerLength,
             'element' => array(
                 'name' => 'pre',
                 'element' => $element,
+                'it-quote' => $info,
             ),
         );
     }
 
-    protected function blockFencedCodeContinue(array $line, $block): ?array
-    {
-        if (isset($block['complete']))
-        {
+    /**
+     * 增加代码引用
+     * @param string $infoString
+     * @return array
+     */
+    protected function parseCodeItQuote(string $infoString): array {
+        if (empty($infoString)) {
+            return [];
+        }
+        $data = [
+            'language' => substr($infoString, 0, strcspn($infoString, " \t\n\f\r{("))
+        ];
+        $i = strpos($infoString, '(');
+        $j = strpos($infoString, '{');
+        if ($i !== false && $j !== false) {
+            if (preg_match('/\{([\d-]+)\}\s*(\{([\d-,]+)\}\s*)?\((.+?)\)/', $infoString, $match)) {
+                $data['lines'] = $this->parseQuoteLine($match[1]);
+                $data['highlight'] = array_map([$this, 'parseQuoteLine'], explode(',', $match[3]));
+                $data['url'] = $match[4];
+            }
+        } elseif ($i !== false && $j === false) {
+            $data['url'] = substr($infoString, $i + 1, strpos($infoString, ')') - $i - 1);
+        } else if ($j !== false) {
+            $data['highlight'] = array_map([$this, 'parseQuoteLine'],
+                explode(',', substr($infoString, $j + 1,
+                    strpos($infoString, '}') - $j - 1)));
+        }
+        return $data;
+    }
+
+    protected function parseQuoteLine(string $block): array {
+        $res = array_map('intval', explode('-', $block));
+        if ($res[0] < 1) {
+            $res[0] = 1;
+        }
+        if (count($res) === 1 || $res[1] < $res[0]) {
+            $res[1] = $res[0];
+        }
+        return $res;
+    }
+
+    protected function blockFencedCodeContinue(array $line, array $block): ?array {
+        if (isset($block['complete'])) {
             return null;
         }
 
-        if (isset($block['interrupted']))
-        {
+        if (isset($block['interrupted'])) {
             $block['element']['element']['text'] .= str_repeat("\n", $block['interrupted']);
 
             unset($block['interrupted']);
@@ -533,19 +524,21 @@ class MarkDown {
             && chop(substr($line['text'], $len), ' ') === ''
         ) {
             $block['element']['element']['text'] = substr($block['element']['element']['text'], 1);
-
             $block['complete'] = true;
-
             return $block;
         }
-
         $block['element']['element']['text'] .= "\n" . $line['body'];
-
         return $block;
     }
 
-    protected function blockFencedCodeComplete($block)
-    {
+    protected function blockFencedCodeComplete(array $block): array {
+        $itQuote = $block['element']['it-quote'] ?? [];
+        if (!isset($itQuote['lines'])) {
+            $itQuote['lines'] = [1];
+        }
+        $itQuote['lines'][1] = $itQuote['lines'][0] +
+            substr_count($block['element']['element']['text'], "\n");
+        $block['element']['it-quote'] = $itQuote;
         return $block;
     }
 
@@ -1134,13 +1127,11 @@ class MarkDown {
     # ~
     #
 
-    public function line(string $text, array $nonNestables = array()): string
-    {
+    public function line(string $text, array $nonNestables = array()): string {
         return $this->elements($this->lineElements($text, $nonNestables));
     }
 
-    protected function lineElements(string $text, array $nonNestables = array())
-    {
+    protected function lineElements(string $text, array $nonNestables = array()) {
         # standardize line breaks
         $text = str_replace(array("\r\n", "\r"), "\n", $text);
 
@@ -1263,8 +1254,7 @@ class MarkDown {
         return $inline;
     }
 
-    protected function inlineCode(array $excerpt): ?array
-    {
+    protected function inlineCode(array $excerpt): ?array {
         $marker = $excerpt['text'][0];
 
         if (preg_match('/^(['.$marker.']++)[ ]*+(.+?)[ ]*+(?<!['.$marker.'])\1(?!'.$marker.')/s', $excerpt['text'], $matches))
@@ -1702,28 +1692,20 @@ class MarkDown {
         }, $elements);
     }
 
-    protected function element(array $element)
-    {
-        if ($this->safeMode)
-        {
+    protected function element(array $element) {
+        if ($this->safeMode) {
             $element = $this->sanitiseElement($element);
         }
 
         # identity map if element has no handler
         $element = $this->handle($element);
-
         $hasName = isset($element['name']);
 
         $markup = '';
-
-        if ($hasName)
-        {
+        if ($hasName) {
             $markup .= '<' . $element['name'];
-
-            if (isset($element['attributes']))
-            {
-                foreach ($element['attributes'] as $name => $value)
-                {
+            if (isset($element['attributes'])) {
+                foreach ($element['attributes'] as $name => $value) {
                     if ($value === null)
                     {
                         continue;
@@ -1736,14 +1718,12 @@ class MarkDown {
 
         $permitRawHtml = false;
 
-        if (isset($element['text']))
-        {
+        if (isset($element['text'])) {
             $text = $element['text'];
         }
         // very strongly consider an alternative if you're writing an
         // extension
-        elseif (isset($element['rawHtml']))
-        {
+        elseif (isset($element['rawHtml'])) {
             $text = $element['rawHtml'];
 
             $allowRawHtmlInSafeMode = isset($element['allowRawHtmlInSafeMode']) && $element['allowRawHtmlInSafeMode'];
@@ -1752,50 +1732,88 @@ class MarkDown {
 
         $hasContent = isset($text) || isset($element['element']) || isset($element['elements']);
 
-        if ($hasContent)
-        {
+        if ($hasContent) {
             $markup .= $hasName ? '>' : '';
 
-            if (isset($element['elements']))
-            {
+            if (isset($element['elements'])) {
                 $markup .= $this->elements($element['elements']);
             }
-            elseif (isset($element['element']))
-            {
+            elseif (isset($element['element'])) {
                 $markup .= $this->element($element['element']);
-            }
-            else
-            {
-                if (!$permitRawHtml)
-                {
+            } else {
+                if (!$permitRawHtml) {
                     $markup .= self::escape($text, true);
-                }
-                else
-                {
+                } else {
                     $markup .= $text;
                 }
             }
 
             $markup .= $hasName ? '</' . $element['name'] . '>' : '';
-        }
-        elseif ($hasName)
-        {
+        } elseif ($hasName) {
             $markup .= ' />';
         }
-
+        if ($element['name'] === 'pre' && !empty($element['it-quote'])) {
+            return $this->renderCode($element['it-quote'], $markup);
+        }
         return $markup;
     }
 
-    protected function elements(array $elements): string
-    {
+    /**
+     * 自定义代码块样式
+     * @param array $quote
+     * @param string $content
+     * @return string
+     */
+    protected function renderCode(array $quote, string $content): string {
+        $urlBtn = !empty($quote['url']) ? sprintf('<a href="%s" target="_blank" rel="noopener" title="open url"><i class="icon-cloud"></i></a>',
+            $quote['url']
+        ) : '';
+        $highlight = '';
+        $line = '';
+        $selected = $quote['highlight'] ?? [];
+        for ($i = max($quote['lines'][0], 1); $i <= $quote['lines'][1]; $i ++) {
+            $highlight .= $this->isInRange($i, $selected) ?
+                '<span class="highlighted">&nbsp;</span>' : '<span>&nbsp;</span>';
+            $line .= sprintf('<span>%d</span>', $i);
+        }
+        return <<<HTML
+ <div class="code-container">
+    <div class="code-header">
+        <a data-action="copy" title="copy">
+            <i class="icon-copy"></i>
+        </a>
+        <a data-action="full" title="full screen">
+            <i class="icon-full-screen"></i>
+        </a>
+        {$urlBtn}
+        <span>{$quote['language']}</span>
+    </div>
+    <div class="highlight-bar">
+        {$highlight}
+    </div>
+    {$content}
+    <div class="line-number-bar">
+        {$line}
+    </div>
+</div>
+HTML;
+    }
+
+    protected function isInRange(int $i, array $items): bool {
+        foreach ($items as $item) {
+            if ($i >= $item[0] && $i <= $item[1]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected function elements(array $elements): string {
         $markup = '';
 
         $autoBreak = true;
-
-        foreach ($elements as $element)
-        {
-            if (empty($element))
-            {
+        foreach ($elements as $element) {
+            if (empty($element)) {
                 continue;
             }
 
