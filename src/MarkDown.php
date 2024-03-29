@@ -483,19 +483,32 @@ class MarkDown {
         $i = strpos($infoString, '(');
         $j = strpos($infoString, '{');
         if ($i !== false && $j !== false) {
-            if (preg_match('/\{([\d-]+)\}\s*(\{([\d-,]+)\}\s*)?\((.+?)\)/', $infoString, $match)) {
-                $data['lines'] = $this->parseQuoteLine($match[1]);
-                $data['highlight'] = array_map([$this, 'parseQuoteLine'], explode(',', $match[3]));
-                $data['url'] = $match[4];
+            $j ++;
+            $data['lines'] = $this->parseQuoteLine($this->subBlock($infoString, $j, '}'));
+            $j = strpos($infoString, '{', $j);
+            if ($j !== false) {
+                $data['highlight'] = array_map([$this, 'parseQuoteLine'],
+                    explode(',',
+                        $this->subBlock($infoString, $j + 1, '}')
+                    ));
             }
+            $data['url'] = $this->subBlock($infoString, $i + 1, ')');
         } elseif ($i !== false && $j === false) {
-            $data['url'] = substr($infoString, $i + 1, strpos($infoString, ')') - $i - 1);
+            $data['url'] = $this->subBlock($infoString, $i + 1, ')');
         } else if ($j !== false) {
             $data['highlight'] = array_map([$this, 'parseQuoteLine'],
-                explode(',', substr($infoString, $j + 1,
-                    strpos($infoString, '}') - $j - 1)));
+                explode(',',
+                    $this->subBlock($infoString, $j + 1, '}')));
         }
         return $data;
+    }
+
+    protected function subBlock(string $str, int $begin, string $endTag): string {
+        $j = strpos($str, $endTag, $begin);
+        if ($j === false) {
+            return '';
+        }
+        return substr($str, $begin, $j - $begin);
     }
 
     protected function parseQuoteLine(string $block): array {
@@ -1752,7 +1765,7 @@ class MarkDown {
         } elseif ($hasName) {
             $markup .= ' />';
         }
-        if ($element['name'] === 'pre' && !empty($element['it-quote'])) {
+        if (!empty($element['name']) && $element['name'] === 'pre' && !empty($element['it-quote'])) {
             return $this->renderCode($element['it-quote'], $markup);
         }
         return $markup;
@@ -1776,6 +1789,7 @@ class MarkDown {
                 '<span class="highlighted">&nbsp;</span>' : '<span>&nbsp;</span>';
             $line .= sprintf('<span>%d</span>', $i);
         }
+        $language = $quote['language'] ?? '';
         return <<<HTML
  <div class="code-container">
     <div class="code-header">
@@ -1786,7 +1800,7 @@ class MarkDown {
             <i class="icon-full-screen"></i>
         </a>
         {$urlBtn}
-        <span>{$quote['language']}</span>
+        <span>{$language}</span>
     </div>
     <div class="highlight-bar">
         {$highlight}
@@ -1862,7 +1876,7 @@ HTML;
 
         while (preg_match($regexp, $text, $matches, PREG_OFFSET_CAPTURE))
         {
-            $offset = $matches[0][1];
+            $offset = intval($matches[0][1]);
             $before = substr($text, 0, $offset);
             $after = substr($text, $offset + strlen($matches[0][0]));
 
