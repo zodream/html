@@ -14,17 +14,17 @@ abstract class BaseRss {
     protected string $link = '';
     protected string $description = '';
 
-    public function setLink(string $link) {
+    public function setLink(string $link): static {
         $this->link = $link;
         return $this;
     }
 
-    public function setTitle(string $title) {
+    public function setTitle(string $title): static {
         $this->title = $title;
         return $this;
     }
 
-    public function setDescription(mixed $value) {
+    public function setDescription(mixed $value): static {
         if (is_string($value)) {
             $value = str_replace('&', '&amp;', $value);
         }
@@ -32,7 +32,7 @@ abstract class BaseRss {
         return $this;
     }
 
-    public function setPubDate(string|int $time) {
+    public function setPubDate(string|int $time): static {
         if(is_numeric($time)) {
             $this->pubDate = date('D, d M Y H:i:s ', intval($time)) . 'GMT';
         } else {
@@ -48,9 +48,21 @@ abstract class BaseRss {
         return $this->pubDate;
     }
 
-    public function addTag(string $tag, string $value) {
-        $this->tags[$tag] = $value;
+    public function addTag(string $tag, string $value): static {
+        $this->tags[$tag] = $this->encodeString($value);
         return $this;
+    }
+
+    /**
+     * 格式化 &
+     * @param mixed $value
+     * @return mixed
+     */
+    protected function encodeString(mixed $value): mixed {
+        if (is_string($value)) {
+            return str_replace('&', '&amp;', $value);
+        }
+        return $value;
     }
 
     abstract public function __toString(): string;

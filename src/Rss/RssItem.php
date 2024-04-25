@@ -8,7 +8,7 @@ class RssItem extends BaseRss {
     protected int $length = 0;
     protected string $mimeType = '';
 
-    public function setGuid(string|int $guid) {
+    public function setGuid(string|int $guid): static {
         $this->guid = $guid;
         return $this;
     }
@@ -42,7 +42,7 @@ class RssItem extends BaseRss {
      * @param int $length 文件的大小
      * @return $this
      */
-    public function enclosure(string $url, string $mimeType, int $length) {
+    public function enclosure(string $url, string $mimeType, int $length): static {
         $this->attachment = $url;
         $this->mimeType  = $mimeType;
         $this->length   = $length;
