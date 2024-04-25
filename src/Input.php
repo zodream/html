@@ -46,7 +46,7 @@ class Input implements ArrayAble, JsonAble, \Stringable {
         'markdown'
     ];
     const PROPERTY_ITEMS = ['id', 'class', 'type', 'label', 'name', 'tip', 'items', 'value',
-        'required', 'placeholder'];
+        'required', 'placeholder', 'multiple', 'tooltip'];
 
     public function __construct(
         protected array $data = [],
