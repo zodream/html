@@ -107,6 +107,11 @@ class MarkDown {
     protected bool $strictMode = false;
 
     /**
+     * 是否允许自定义样式， rss 模式不支持
+     */
+    protected bool $useCustomStyle = true;
+
+    /**
      * 是否启用图片懒加载
      * @var array
      */
@@ -117,11 +122,20 @@ class MarkDown {
      * @param array $lazyLoad [class, src, default]
      * @return $this
      */
-    public function setLazyLoad(array $lazyLoad)
-    {
+    public function setLazyLoad(array $lazyLoad) {
         $this->lazyLoad = $lazyLoad;
         return $this;
     }
+
+    /**
+     * 是否允许自定义样式， rss 模式不支持
+     * @param bool $useCustomStyle
+     */
+    public function setCustomStyle(bool $useCustomStyle) {
+        $this->useCustomStyle = $useCustomStyle;
+        return $this;
+    }
+
 
     protected array $safeLinksWhitelist = array(
         'http://',
@@ -1765,7 +1779,7 @@ class MarkDown {
         } elseif ($hasName) {
             $markup .= ' />';
         }
-        if (!empty($element['name']) && $element['name'] === 'pre' && !empty($element['it-quote'])) {
+        if ($this->useCustomStyle && !empty($element['name']) && $element['name'] === 'pre' && !empty($element['it-quote'])) {
             return $this->renderCode($element['it-quote'], $markup);
         }
         return $markup;
