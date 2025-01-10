@@ -28,7 +28,7 @@ class Rss extends BaseRss {
      * @param string|null $title
      * @return Rss
      */
-    public function setImage(string $url, string $link, string $title = null): static {
+    public function setImage(string $url, string $link, string|null $title = null): static {
         $this->image = compact('url', 'link');
         if (!empty($title)) {
             $this->image['title'] = $title;

@@ -358,7 +358,7 @@ class MarkDown {
     #
     # Code
 
-    protected function blockCode(array $line, $block = null): ?array {
+    protected function blockCode(array $line, $block = null): array|null {
         if (!empty($block) && $block['type'] === 'Paragraph' && ! isset($block['interrupted'])) {
             return null;
         }
@@ -378,7 +378,7 @@ class MarkDown {
         );
     }
 
-    protected function blockCodeContinue(array $line, $block): ?array
+    protected function blockCodeContinue(array $line, $block): array|null
     {
         if ($line['indent'] < 4) {
             return null;
@@ -406,7 +406,7 @@ class MarkDown {
     #
     # Comment
 
-    protected function blockComment($line): ?array
+    protected function blockComment($line): array|null
     {
         if ($this->markupEscaped || $this->safeMode)
         {
@@ -429,7 +429,7 @@ class MarkDown {
         return $block;
     }
 
-    protected function blockCommentContinue(array $line, array $block): ?array
+    protected function blockCommentContinue(array $line, array $block): array|null
     {
         if (isset($block['closed']))
         {
@@ -449,7 +449,7 @@ class MarkDown {
     /*
     # Fenced Code
     */
-    protected function blockFencedCode($line): ?array {
+    protected function blockFencedCode($line): array|null {
         $marker = $line['text'][0];
 
         $openerLength = strspn($line['text'], $marker);
@@ -536,7 +536,7 @@ class MarkDown {
         return $res;
     }
 
-    protected function blockFencedCodeContinue(array $line, array $block): ?array {
+    protected function blockFencedCodeContinue(array $line, array $block): array|null {
         if (isset($block['complete'])) {
             return null;
         }
@@ -572,7 +572,7 @@ class MarkDown {
     #
     # Header
 
-    protected function blockHeader(array $line): ?array
+    protected function blockHeader(array $line): array|null
     {
         $level = strspn($line['text'], '#');
 
@@ -605,7 +605,7 @@ class MarkDown {
     #
     # List
 
-    protected function blockList(array $line, array $currentBlock = null): ?array
+    protected function blockList(array $line, array|null $currentBlock = null): array|null
     {
         list($name, $pattern) = $line['text'][0] <= '-' ? array('ul', '[*+-]') : array('ol', '[0-9]{1,9}+[.\)]');
 
@@ -675,7 +675,7 @@ class MarkDown {
         return null;
     }
 
-    protected function blockListContinue(array $line, array $block): ?array
+    protected function blockListContinue(array $line, array $block): array|null
     {
         if (isset($block['interrupted']) && empty($block['li']['handler']['argument']))
         {
@@ -781,7 +781,7 @@ class MarkDown {
     #
     # Quote
 
-    protected function blockQuote(array $line): ?array
+    protected function blockQuote(array $line): array|null
     {
         if (preg_match('/^>[ ]?+(.*+)/', $line['text'], $matches))
         {
@@ -799,7 +799,7 @@ class MarkDown {
         return null;
     }
 
-    protected function blockQuoteContinue(array $line, array $block): ?array
+    protected function blockQuoteContinue(array $line, array $block): array|null
     {
         if (isset($block['interrupted']))
         {
@@ -819,7 +819,7 @@ class MarkDown {
     #
     # Rule
 
-    protected function blockRule(array $line): ?array
+    protected function blockRule(array $line): array|null
     {
         $marker = $line['text'][0];
 
@@ -837,7 +837,7 @@ class MarkDown {
     #
     # Setext
 
-    protected function blockSetextHeader(array $line, array $block = null): ?array
+    protected function blockSetextHeader(array $line, array|null $block = null): array|null
     {
         if ( ! isset($block) || $block['type'] !== 'Paragraph' || isset($block['interrupted']))
         {
@@ -856,7 +856,7 @@ class MarkDown {
     #
     # Markup
 
-    protected function blockMarkup(array $line): ?array
+    protected function blockMarkup(array $line): array|null
     {
         if ($this->markupEscaped || $this->safeMode)
         {
@@ -883,7 +883,7 @@ class MarkDown {
         return null;
     }
 
-    protected function blockMarkupContinue(array $line, array $block): ?array
+    protected function blockMarkupContinue(array $line, array $block): array|null
     {
         if (isset($block['closed']) || isset($block['interrupted']))
         {
@@ -898,7 +898,7 @@ class MarkDown {
     #
     # Reference
 
-    protected function blockReference(array $line): ?array
+    protected function blockReference(array $line): array|null
     {
         if (str_contains($line['text'], ']')
             && preg_match('/^\[(.+?)\]:[ ]*+<?(\S+?)>?(?:[ ]+["\'(](.+)["\')])?[ ]*+$/', $line['text'], $matches)
@@ -920,7 +920,7 @@ class MarkDown {
     #
     # Table
 
-    protected function blockTable(array $line, array $block = null): ?array
+    protected function blockTable(array $line, array|null $block = null): array|null
     {
         if ( ! isset($block) || $block['type'] !== 'Paragraph' || isset($block['interrupted']))
         {
@@ -1043,7 +1043,7 @@ class MarkDown {
         return $block;
     }
 
-    protected function blockTableContinue(array $line, array $block): ?array
+    protected function blockTableContinue(array $line, array $block): array|null
     {
         if (isset($block['interrupted']))
         {
@@ -1117,7 +1117,7 @@ class MarkDown {
         );
     }
 
-    protected function paragraphContinue(array $line, array $block): ?array
+    protected function paragraphContinue(array $line, array $block): array|null
     {
         if (isset($block['interrupted']))
         {
@@ -1281,7 +1281,7 @@ class MarkDown {
         return $inline;
     }
 
-    protected function inlineCode(array $excerpt): ?array {
+    protected function inlineCode(array $excerpt): array|null {
         $marker = $excerpt['text'][0];
 
         if (preg_match('/^(['.$marker.']++)[ ]*+(.+?)[ ]*+(?<!['.$marker.'])\1(?!'.$marker.')/s', $excerpt['text'], $matches))
@@ -1300,7 +1300,7 @@ class MarkDown {
         return null;
     }
 
-    protected function inlineEmailTag(array $excerpt): ?array
+    protected function inlineEmailTag(array $excerpt): array|null
     {
         $hostnameLabel = '[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?';
 
@@ -1331,7 +1331,7 @@ class MarkDown {
         return null;
     }
 
-    protected function inlineEmphasis(array $excerpt): ?array
+    protected function inlineEmphasis(array $excerpt): array|null
     {
         if ( ! isset($excerpt['text'][1]))
         {
@@ -1366,7 +1366,7 @@ class MarkDown {
         );
     }
 
-    protected function inlineEscapeSequence(array $excerpt): ?array
+    protected function inlineEscapeSequence(array $excerpt): array|null
     {
         if (isset($excerpt['text'][1]) && in_array($excerpt['text'][1], $this->specialCharacters))
         {
@@ -1378,7 +1378,7 @@ class MarkDown {
         return null;
     }
 
-    protected function inlineImage(array $excerpt): ?array
+    protected function inlineImage(array $excerpt): array|null
     {
         if ( ! isset($excerpt['text'][1]) || $excerpt['text'][1] !== '[')
         {
@@ -1424,7 +1424,7 @@ class MarkDown {
         return $inline;
     }
 
-    protected function inlineLink(array $excerpt): ?array
+    protected function inlineLink(array $excerpt): array|null
     {
         $element = array(
             'name' => 'a',
@@ -1499,7 +1499,7 @@ class MarkDown {
         );
     }
 
-    protected function inlineMarkup(array $excerpt): ?array
+    protected function inlineMarkup(array $excerpt): array|null
     {
         if ($this->markupEscaped || $this->safeMode || !str_contains($excerpt['text'], '>'))
         {
@@ -1532,7 +1532,7 @@ class MarkDown {
         return null;
     }
 
-    protected function inlineSpecialCharacter(array $excerpt): ?array
+    protected function inlineSpecialCharacter(array $excerpt): array|null
     {
         if (substr($excerpt['text'], 1, 1) !== ' ' && str_contains($excerpt['text'], ';')
             && preg_match('/^&(#?+[0-9a-zA-Z]++);/', $excerpt['text'], $matches)
@@ -1546,7 +1546,7 @@ class MarkDown {
         return null;
     }
 
-    protected function inlineStrikethrough($excerpt): ?array
+    protected function inlineStrikethrough($excerpt): array|null
     {
         if ( ! isset($excerpt['text'][1]))
         {
@@ -1570,7 +1570,7 @@ class MarkDown {
         return null;
     }
 
-    protected function inlineUrl(array $excerpt): ?array
+    protected function inlineUrl(array $excerpt): array|null
     {
         if (!$this->urlsLinked || ! isset($excerpt['text'][2]) || $excerpt['text'][2] !== '/')
         {
@@ -1597,7 +1597,7 @@ class MarkDown {
         return null;
     }
 
-    protected function inlineUrlTag(array $excerpt): ?array
+    protected function inlineUrlTag(array $excerpt): array|null
     {
         if (str_contains($excerpt['text'], '>') && preg_match('/^<(\w++:\/{2}[^ >]++)>/i', $excerpt['text'], $matches))
         {

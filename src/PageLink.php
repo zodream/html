@@ -210,7 +210,7 @@ class PageLink extends Widget {
         ], $this->get('goto'));
 	}
 	
-	protected function replaceLine(int $page, ?string $text = null): string {
+	protected function replaceLine(int $page, string|null $text = null): string {
 		return $this->replaceTemplate(
             url([
                 $this->get('key') => $page

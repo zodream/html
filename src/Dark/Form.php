@@ -37,7 +37,7 @@ class Form {
         return Arr::getChildByArray($args, $val);
     }
 
-    public static function getModelLabel(string $name): ?string {
+    public static function getModelLabel(string $name): string|null {
         return static::$model instanceof Model ?
             static::$model->getLabel($name) : Str::studly($name);
     }
@@ -112,7 +112,7 @@ class Form {
      * @param null $data
      * @return Input
      */
-    public static function checkbox(string $name, array $data = null): Input {
+    public static function checkbox(string $name, array|null $data = null): Input {
         return Theme::checkbox(static::formatName($name).'[]', $data, static::getModelValue($name), static::getModelLabel($name));
     }
 

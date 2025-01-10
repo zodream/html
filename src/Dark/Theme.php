@@ -21,9 +21,9 @@ class Theme {
         return Html::ul($html, $option);
     }
 
-    public static function menuItem(?string $label, mixed $url = 'javascript:;',
-                                    ?string $icon = '',
-                                    ?array $children = [],
+    public static function menuItem(string|null $label, mixed $url = 'javascript:;',
+                                    string|null $icon = '',
+                                    array|null $children = [],
                                     bool $expand = false,
                                     bool $active = false,
                                     bool $toggle = true, array $options = []): string {

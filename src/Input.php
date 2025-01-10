@@ -55,7 +55,7 @@ class Input implements ArrayAble, JsonAble, \Stringable {
 
     }
 
-    public function setType(string $type, ?string $name = null, mixed $value = null) {
+    public function setType(string $type, string|null $name = null, mixed $value = null) {
         $this->data['type'] = $type;
         if (!empty($name)) {
             $this->data['name'] = $name;

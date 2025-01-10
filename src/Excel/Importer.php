@@ -80,7 +80,7 @@ abstract class Importer implements ArrayAble {
      * @param string $name A1这种
      * @return string|null
      */
-    protected function formatCell(?Cell $cell, int $row, int $column, string $name) {
+    protected function formatCell(Cell|null $cell, int $row, int $column, string $name) {
         if (empty($cell)) {
             return null;
         }
