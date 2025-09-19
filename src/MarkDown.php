@@ -1810,6 +1810,9 @@ class MarkDown {
         <a data-action="copy" title="copy">
             <i class="icon-copy"></i>
         </a>
+        <a data-action="minimize" title="minimize">
+            <i class="icon-minimize"></i>
+        </a>
         <a data-action="full" title="full screen">
             <i class="icon-full-screen"></i>
         </a>
