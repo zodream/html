@@ -30,7 +30,7 @@ use Zodream\Infrastructure\Contracts\JsonAble;
  */
 class Input implements ArrayAble, JsonAble, \Stringable {
 
-    const TYPE_ITEMS = ['text',
+    const array TYPE_ITEMS = ['text',
         'date',
         'datetime',
         'numeric',
@@ -45,8 +45,8 @@ class Input implements ArrayAble, JsonAble, \Stringable {
         'select', 'textarea', 'switch', 'html',
         'markdown'
     ];
-    const PROPERTY_ITEMS = ['id', 'class', 'type', 'label', 'name', 'tip', 'items', 'value',
-        'required', 'placeholder', 'multiple', 'tooltip'];
+    const array PROPERTY_ITEMS = ['id', 'class', 'type', 'label', 'name', 'tip', 'items', 'value',
+        'required', 'placeholder', 'multiple', 'tooltip', 'after'];
 
     public function __construct(
         protected array $data = [],

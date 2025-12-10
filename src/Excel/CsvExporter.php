@@ -26,7 +26,6 @@ class CsvExporter implements ExportObject {
             $firstRow = array_keys($data[0]);
         }
         $this->firstRow = $firstRow;
-        $this->data = $data;
     }
 
     /**

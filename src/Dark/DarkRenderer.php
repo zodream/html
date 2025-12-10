@@ -2,7 +2,6 @@
 declare(strict_types=1);
 namespace Zodream\Html\Dark;
 
-use Zodream\Helpers\Arr;
 use Zodream\Helpers\Str;
 use Zodream\Html\Form as BaseForm;
 use Zodream\Html\IHtmlRenderer;
@@ -43,8 +42,15 @@ class DarkRenderer implements IHtmlRenderer {
             return $this->$method($data);
         }
         return $this->renderInputRow(
-            BaseForm::input($data['type'], $data['name'], $data['value'] ?? '', $data),
+            BaseForm::input($data['type'], $data['name'], $data['value'] ?? '', $this->formatInputAttributes($data)),
             $data);
+    }
+
+    protected function formatInputAttributes(array $data): array
+    {
+        return array_filter($data, function (string $key) {
+            return !in_array($key, ['label', 'tip', 'items', 'tooltip', 'after']);
+        }, ARRAY_FILTER_USE_KEY);
     }
 
     protected function renderInputRow(string $input, array $data): string {
