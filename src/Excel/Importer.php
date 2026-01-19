@@ -33,21 +33,25 @@ abstract class Importer implements ArrayAble {
         return 0;
     }
 
-    public function import(mixed $filePath, string $readerType = 'Xlsx') {
-        $factory = IOFactory::createReader($readerType);
-        $factory->setReadDataOnly(true);
-        $reader = $factory->load((string)$filePath);
-        $this->eachSheet($reader);
+    public function import(mixed $filePath, string $readerType = 'Xlsx'): void {
+        $reader = $this->openFile($filePath, $readerType);
+        $this->readSheet($reader);
     }
 
-    protected function eachSheet(Spreadsheet $reader) {
+    protected function openFile(mixed $filePath, string $readerType = 'Xlsx'): Spreadsheet {
+        $factory = IOFactory::createReader($readerType);
+        $factory->setReadDataOnly(true);
+        return $factory->load((string)$filePath);
+    }
+
+    protected function readSheet(Spreadsheet $reader): void {
         $sheet = $reader->getSheet($this->sheetIndex());
         $headerRow = $this->headingRow();
         $headers = [];
         if ($headerRow > 0) {
             $headers = $this->readRow($sheet, $headerRow);
         }
-        $this->eachRow($sheet, function (array $row) use ($headers) {
+        $this->readRows($sheet, function (array $row) use ($headers) {
             $model = $this->model($this->combine($headers, $row));
             if (empty($model)) {
                 return;
@@ -56,13 +60,13 @@ abstract class Importer implements ArrayAble {
         }, $headerRow + 1);
     }
 
-    protected function eachRow(Worksheet $sheet, callable $cb,
-                              int $start = 1, int $end = 0, int $columnLength = 0) {
-        $count = $sheet->getHighestRow();
+    protected function readRows(Worksheet $sheet, callable $cb,
+                              int $start = 1, int $end = 0, int $columnLength = 0): void {
+        $count = $this->getMaxRow($sheet);
         if ($end < 1 || $count < $end) {
             $end = $count;
         }
-        $count = $sheet->getHighestColumn();
+        $count = $this->getMaxColumn($sheet);
         if ($columnLength < 1 || $columnLength < $count) {
             $columnLength = $count;
         }
@@ -79,7 +83,7 @@ abstract class Importer implements ArrayAble {
             return [];
         }
         if ($columnLength < 1) {
-            $columnLength = $sheet->getHighestColumn();
+            $columnLength = $this->getMaxColumn($sheet);
         }
         $data = [];
         for ($i = 1; $i <= $columnLength; $i ++) {
@@ -89,6 +93,14 @@ abstract class Importer implements ArrayAble {
             $data[] = $this->formatCell($cell, $row, $i, $columnName);
         }
         return $data;
+    }
+
+    protected function getMaxRow(Worksheet $sheet): int {
+        return $sheet->getHighestDataRow();
+    }
+
+    protected function getMaxColumn(Worksheet $sheet): int {
+        return Coordinate::columnIndexFromString($sheet->getHighestDataColumn());
     }
 
     protected function combine(array $keys, array $values): array {
@@ -114,7 +126,7 @@ abstract class Importer implements ArrayAble {
      * @param string $name A1这种
      * @return string|null
      */
-    protected function formatCell(Cell|null $cell, int $row, int $column, string $name) {
+    protected function formatCell(Cell|null $cell, int $row, int $column, string $name): mixed {
         if (empty($cell)) {
             return null;
         }
