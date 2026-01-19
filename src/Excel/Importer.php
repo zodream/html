@@ -13,7 +13,7 @@ abstract class Importer implements ArrayAble {
 
     protected array $items = [];
 
-    public function model(array $row) {
+    public function model(array $row): mixed {
         return $row;
     }
 
@@ -33,7 +33,7 @@ abstract class Importer implements ArrayAble {
         return 0;
     }
 
-    public function import($filePath, string $readerType = 'Xlsx') {
+    public function import(mixed $filePath, string $readerType = 'Xlsx') {
         $factory = IOFactory::createReader($readerType);
         $factory->setReadDataOnly(true);
         $reader = $factory->load((string)$filePath);
@@ -42,17 +42,22 @@ abstract class Importer implements ArrayAble {
 
     protected function eachSheet(Spreadsheet $reader) {
         $sheet = $reader->getSheet($this->sheetIndex());
-        $this->eachRow($sheet, function (array $row) {
-            $model = $this->model($row);
+        $headerRow = $this->headingRow();
+        $headers = [];
+        if ($headerRow > 0) {
+            $headers = $this->readRow($sheet, $headerRow);
+        }
+        $this->eachRow($sheet, function (array $row) use ($headers) {
+            $model = $this->model($this->combine($headers, $row));
             if (empty($model)) {
                 return;
             }
             $this->items[] = $model;
-        }, $this->headingRow() + 1);
+        }, $headerRow + 1);
     }
 
     protected function eachRow(Worksheet $sheet, callable $cb,
-                              $start = 1, $end = 0, $columnLength = 0) {
+                              int $start = 1, int $end = 0, int $columnLength = 0) {
         $count = $sheet->getHighestRow();
         if ($end < 1 || $count < $end) {
             $end = $count;
@@ -61,16 +66,45 @@ abstract class Importer implements ArrayAble {
         if ($columnLength < 1 || $columnLength < $count) {
             $columnLength = $count;
         }
-        for (; $start <= $end; $start ++) {
-            $row = [];
-            for ($i = 1; $i <= $columnLength; $i ++) {
-                $cellName = Coordinate::stringFromColumnIndex($i);
-                $columnName = $cellName.$start;
-                $cell = $sheet->getCell($columnName);
-                $row[] = $this->formatCell($cell, $start, $i, $columnName);
-            }
-            call_user_func($cb, $row);
+        if ($columnLength === 0) {
+            return;
         }
+        for (; $start <= $end; $start ++) {
+            call_user_func($cb, $this->readRow($sheet, $start, $columnLength));
+        }
+    }
+
+    protected function readRow(Worksheet $sheet, int $row, int $columnLength = 0): array {
+        if ($row <= 0) {
+            return [];
+        }
+        if ($columnLength < 1) {
+            $columnLength = $sheet->getHighestColumn();
+        }
+        $data = [];
+        for ($i = 1; $i <= $columnLength; $i ++) {
+            $cellName = Coordinate::stringFromColumnIndex($i);
+            $columnName = $cellName.$row;
+            $cell = $sheet->getCell($columnName);
+            $data[] = $this->formatCell($cell, $row, $i, $columnName);
+        }
+        return $data;
+    }
+
+    protected function combine(array $keys, array $values): array {
+        $keyCount = count($keys);
+        if ($keyCount === 0) {
+            return $values;
+        }
+        $valueCount = count($values);
+        if ($keyCount === $valueCount) {
+            return array_combine($keys, $values);
+        }
+        $data = [];
+        for ($i = 0; $i < $keyCount; $i++) {
+            $data[$keys[$i]] = $i >= $valueCount ? $values[$i] : '';
+        }
+        return $data;
     }
 
     /**
