@@ -20,7 +20,7 @@ class BreadcrumbWidget extends Widget {
         $content = null;
         $count = count($links);
         foreach ($links as $key => $link) {
-            if (!is_integer($key) || $key >= $count) {
+            if (!is_int($key) || $key >= $count) {
                 $link = [$key, $link];
                 $count --;
             }

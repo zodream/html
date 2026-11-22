@@ -37,7 +37,7 @@ class DetailWidget extends Widget {
         $content = '';
         foreach ($args as $key => $arg) {
             list($value, $tag) = Str::explode($arg, ':', 2);
-            if (is_integer($key) && !$isInt) {
+            if (is_int($key) && !$isInt) {
                 $key = $value;
             }
             $content .= '<tr><td>'.$value.'</td><td>'.

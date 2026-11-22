@@ -81,7 +81,7 @@ class TableWidget extends Widget {
         $content = '';
         foreach ($columns as $key => $value) {
             $k = $key;
-            if (is_integer($key) && !is_array($value)) {
+            if (is_int($key) && !is_array($value)) {
                 $k = $value;
             }
             // 为避免重复键

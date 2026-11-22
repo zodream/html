@@ -60,7 +60,7 @@ class TabWidget extends Widget {
         if (array_key_exists('content', $item)) {
             return [$key, $item['content'], isset($item['active']) && $item['active']];
         }
-        if (is_integer($key)) {
+        if (is_int($key)) {
             return [$item[0], $item[1], isset($item[2]) && $item[2]];
         }
         return [$key, $item[0], $item[1]];

@@ -33,7 +33,7 @@ class FormWidget extends Widget {
                 $content .= $value(array_key_exists($key, $data) ? $data[$key] : null);
                 continue;
             }
-            if (!is_integer($key)) {
+            if (!is_int($key)) {
                 $value['name'] = $key;
             }
             // 当value 值已存在时表示不要自动填充值

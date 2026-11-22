@@ -74,7 +74,7 @@ class FieldWidget extends Widget {
     protected function specialInput($type = 'radio', $name = '{name}'): string {
         $content = '';
         foreach ($this->get('groups', array()) as $key => $value) {
-            if (!is_integer($key)) {
+            if (!is_int($key)) {
                 $val = $key;
             } elseif (is_array($value)) {
                 $val = $value['value'] ?? $key;
