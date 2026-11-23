@@ -20,7 +20,7 @@ class TableWidget extends Widget {
         $page = $this->has('page') ? $this->get('page') : $this->get('data');
         if ($page instanceof Page) {
             $this->set(array(
-                'data' => $page->getPage(),
+                'data' => $page->getItems(),
                 'foot' => $page->getLink()
             ));
         }

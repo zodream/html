@@ -3,7 +3,6 @@ declare(strict_types=1);
 namespace Zodream\Html;
 
 use Zodream\Database\Contracts\SqlBuilder;
-use Zodream\Database\Query\Builder;
 use Zodream\Infrastructure\Base\MagicObject;
 use JsonSerializable;
 use ArrayIterator;
@@ -11,39 +10,37 @@ use Zodream\Infrastructure\Contracts\ArrayAble;
 use Zodream\Infrastructure\Contracts\JsonAble;
 
 class Page extends MagicObject implements JsonAble, ArrayAble {
-	private int $_total = 0;
 
-	private int $_index = 1;
-	
-	private int $_pageSize = 20;
-
-	private string $_key = 'page';
+	private int $_totalItems;
+	private readonly int $_currentPage;
+	private readonly int $_perPage;
+	private readonly string $_formKey;
 
 	public function __construct(
-        mixed $total, int $pageSize = 20,
-                                string|int $key = 'page', int $page = -1) {
+        mixed $total, int $perPage = 20,
+        string|int $key = 'page', int $page = -1) {
 	    if (is_numeric($key)) {
 	        list($key, $page) = ['page', $key];
         }
-        $this->_key = $key;
-        $this->_index = max(1, $page >= 0 ? $page : intval(request($key, 1)));
-		$this->_pageSize = is_int($pageSize) ? $pageSize : intval($pageSize);
+        $this->_formKey = $key;
+        $this->_currentPage = max(1, $page >= 0 ? $page : intval(request($key, 1)));
+		$this->_perPage = is_int($perPage) ? $perPage : intval($perPage);
         $this->setTotal($total);
     }
 
     /**
      * @return int
      */
-    public function getPageSize(): int {
-        return $this->_pageSize;
+    public function getPerPage(): int {
+        return $this->_perPage;
     }
 
 	/**
 	 * 获取总共的数据
 	 * @return int
 	 */
-	public function getTotal(): int {
-		return $this->_total;
+	public function getTotalItems(): int {
+		return $this->_totalItems;
 	}
 
     /**
@@ -54,17 +51,17 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
      */
 	public function setTotal(mixed $total) {
 	    if (is_array($total)) {
-	        $this->_total = count($total);
+	        $this->_totalItems = count($total);
 	        if ($this->isEmpty()) {
-	            $this->setPage(array_splice($total, $this->getStart(), $this->getPageSize()));
+	            $this->setItems(array_splice($total, $this->getItemsOffset(), $this->getPerPage()));
             }
 	        return $this;
         }
-		if ($total instanceof Builder) {
-			$this->_total = intval($total->count());
+		if ($total instanceof SqlBuilder) {
+			$this->_totalItems = intval($total->count());
 			return $this;
 		}
-		$this->_total = intval($total);
+		$this->_totalItems = intval($total);
 		return $this;
 	}
 
@@ -72,29 +69,29 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
 	 * 获取一页的数据
 	 * @return array
 	 */
-	public function getPage(): array {
+	public function getItems(): array {
 		return $this->getAttribute();
 	}
 
     /**
      * 设置一页的数据
-     * @param array|Builder $data
+     * @param array|SqlBuilder $data
      * @return $this
      * @throws \Exception
      */
-	public function setPage(array|SqlBuilder $data) {
-		return $this->clearAttribute()->appendPage($data);
+	public function setItems(array|SqlBuilder $data) {
+		return $this->clearAttribute()->appendItems($data);
 	}
 
     /**
      * 追加一页的数据
-     * @param array|Builder $data
+     * @param array|SqlBuilder $data
      * @return $this
      * @throws \Exception
      */
-    public function appendPage(array|SqlBuilder $data) {
-        if ($data instanceof Builder) {
-            $data = $data->limit($this->getLimit())->get();
+    public function appendItems(array|SqlBuilder $data) {
+        if ($data instanceof SqlBuilder) {
+            $data = $data->skip($this->getItemsOffset())->take($this->_perPage)->get();
         }
         $this->setAttribute($data);
         return $this;
@@ -115,47 +112,39 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
      * @return bool
      */
 	public function isEmpty(): bool {
-	    return $this->getPageCount() === 0;
+	    return $this->getItemsCount() === 0;
     }
 
 	/**
 	 * 获取一页数据的长度
 	 * @return int
 	 */
-	public function getPageCount(): int {
+	public function getItemsCount(): int {
 		return $this->count();
 	}
 
-    public function getPageTotal(): int {
-        return (int)ceil($this->_total / $this->_pageSize);
+    public function getTotalPages(): int {
+        return (int)ceil($this->_totalItems / $this->_perPage);
     }
 
-	public function getStart(): int {
-	    return max(($this->_index- 1) * $this->_pageSize, 0);
+	public function getItemsOffset(): int {
+	    return max(($this->_currentPage- 1) * $this->_perPage, 0);
     }
-
-	/**
-	 * 获取查询分页的值
-	 * @return mixed
-	 */
-	public function getLimit(): string {
-		return $this->getStart() . ','.$this->_pageSize;
-	}
 
     /**
      * 是否还有更多
      * @return bool
      */
 	public function hasMore(): bool {
-	    return $this->_index * $this->_pageSize < $this->_total;
+	    return $this->_currentPage * $this->_perPage < $this->_totalItems;
     }
 
     /**
      * 页码
      * @return int
      */
-    public function getIndex(): int {
-	    return $this->_index;
+    public function getCurrentPage(): int {
+	    return $this->_currentPage;
     }
 
 	/**
@@ -165,10 +154,10 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
 	 * @throws \Exception
 	 */
 	public function getLink(array $option = []): string {
-		$option['total'] = $this->_total;
-		$option['pageSize'] = $this->_pageSize;
-		$option['page'] = $this->_index;
-		$option['key'] = $this->_key;
+		$option['total'] = $this->_totalItems;
+		$option['pageSize'] = $this->_perPage;
+		$option['page'] = $this->_currentPage;
+		$option['key'] = $this->_formKey;
 		return PageLink::show($option);
 	}
 	
@@ -205,12 +194,12 @@ class Page extends MagicObject implements JsonAble, ArrayAble {
                 return $value->toArray();
             }
             return $value;
-        }, $this->getPage());
+        }, $this->getItems());
         return [
             'paging' => [
-                'limit' => $this->getPageSize(),
-                'offset' => $this->getIndex(),
-                'total' => $this->getTotal(),
+                'limit' => $this->getPerPage(),
+                'offset' => $this->getCurrentPage(),
+                'total' => $this->getTotalItems(),
                 'more' => $this->hasMore()
             ],
             'data' => $data

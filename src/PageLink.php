@@ -54,7 +54,7 @@ class PageLink extends Widget {
 	 */
 	protected int $pageTotal = -1;
 
-	public function getPageTotal(): int {
+	public function getTotalPages(): int {
 	    $total = ceil($this->get('total') / $this->get('pageSize'));
         $this->pageTotal = intval($total);
         return $this->pageTotal;
@@ -65,7 +65,7 @@ class PageLink extends Widget {
 	 * @return string
 	 */
 	public function getHtml(): string {
-	   if ($this->getPageTotal() < 2 && $this->get('page') == 1) {
+	   if ($this->getTotalPages() < 2 && $this->get('page') == 1) {
 	       return '';
        }
        return str_ireplace(array(
